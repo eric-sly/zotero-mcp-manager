@@ -24,17 +24,13 @@ Provides metadata management, annotations and collections for Zotero items.
 
 ## Installation
 
-### Method 1: Manual (recommended)
-
 1. Download the latest xpi from [Releases](https://github.com/eric-sly/zotero-mcp-manager/releases) or [GitHub Pages](https://eric-sly.github.io/zotero-mcp-manager/).
 2. Zotero → Tools → Add-ons → ⚙️ → **Install Plugin From File…**
 3. Select the `.xpi`, **restart Zotero**.
 
 > When upgrading, remove the old version first.
 
-### Method 2: Zotero auto-update
-
-The plugin's `update_url` points to `update.json` on GitHub Pages; Zotero auto-detects and installs new versions (when the version number increases).
+After installation, the plugin's `update_url` points to `update.json` on GitHub Pages; Zotero auto-detects and installs new versions when the version number increases.
 
 ---
 

@@ -24,17 +24,13 @@
 
 ## 安装
 
-### 方式一：手动安装（推荐）
-
 1. 下载最新的 xpi 文件（见 [Releases](https://github.com/eric-sly/zotero-mcp-manager/releases) 或 [GitHub Pages](https://eric-sly.github.io/zotero-mcp-manager/)）。
 2. Zotero → 工具 → 插件 → ⚙️ → **Install Plugin From File…**
 3. 选择下载的 `.xpi`，**重启 Zotero**。
 
 > 升级时先移除旧版本再安装。
 
-### 方式二：Zotero 自动更新
-
-插件 `update_url` 指向 GitHub Pages 上的 `update.json`，Zotero 会自动检测并安装新版本（版本号升高时）。
+安装完成后，插件 `update_url` 指向 GitHub Pages 上的 `update.json`，Zotero 会在版本号升高时自动检测并安装新版本。
 
 ---
 
