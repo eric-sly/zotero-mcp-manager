@@ -52,6 +52,7 @@ jobs:
       - name: Stage release artifact
         run: |
           VERSION=$(node -p "require('./package.json').version")
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           cp .scaffold/build/zotero-manager-mcp.xpi ./zotero-manager-mcp-${VERSION}.xpi
 
       - name: Create GitHub Release
@@ -62,4 +63,4 @@ jobs:
           body: |
             Zotero Manager MCP ${{ github.ref_name }} auto-release.
           files: |
-            zotero-manager-mcp-*.xpi
+            zotero-manager-mcp-${{ env.VERSION }}.xpi
