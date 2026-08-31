@@ -45,7 +45,7 @@ jobs:
         run: |
           VERSION=$(node -p "require('./package.json').version")
           mkdir -p public
-          cp .scaffold/build/zotero-mcp-manager.xpi ./public/zotero-manager-mcp-${VERSION}.xpi
+          cp .scaffold/build/zotero-manager-mcp.xpi ./public/zotero-manager-mcp-${VERSION}.xpi
           cp update.json ./public/update.json
           cp update-beta.json ./public/update-beta.json
 
