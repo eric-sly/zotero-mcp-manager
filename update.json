@@ -1,0 +1,18 @@
+{
+  "addons": {
+    "zotero-mcp-manager@autoagent.my": {
+      "updates": [
+        {
+          "version": "1.2.1",
+          "update_link": "https://eric-sly.github.io/zotero-mcp-manager/zotero-manager-mcp-1.2.1.xpi",
+          "applications": {
+            "zotero": {
+              "strict_min_version": "6.999",
+              "strict_max_version": "10.99.99"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
