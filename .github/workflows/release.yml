@@ -32,25 +32,21 @@ jobs:
       - name: Prepare update manifests
         run: npm run prepare-release
 
-      - name: Stage Pages assets into gh-pages branch
+      - name: Publish to gh-pages
         run: |
+          set -e
           VERSION=$(node -p "require('./package.json').version")
-          mkdir -p /tmp/release
-          cp .scaffold/build/zotero-manager-mcp.xpi /tmp/release/zotero-manager-mcp-${VERSION}.xpi
-          cp update.json /tmp/release/update.json
-          cp update-beta.json /tmp/release/update-beta.json
-          git fetch origin gh-pages --quiet || true
-          git checkout -B gh-pages origin/gh-pages 2>/dev/null || git checkout -B gh-pages
-          find . -maxdepth 1 -type f ! -name '.*' -delete
-          cp /tmp/release/* .
+          # Clone gh-pages into a clean temp dir (never touches the main workspace)
+          rm -rf /tmp/pages
+          git clone --depth 1 --branch gh-pages https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git /tmp/pages
+          cd /tmp/pages
+          # Reset to a clean state: keep only release assets
+          git rm -rf --ignore-unmatch . >/dev/null 2>&1 || true
+          cp "$GITHUB_WORKSPACE/.scaffold/build/zotero-manager-mcp.xpi" "./zotero-manager-mcp-${VERSION}.xpi"
+          cp "$GITHUB_WORKSPACE/update.json" "./update.json"
+          cp "$GITHUB_WORKSPACE/update-beta.json" "./update-beta.json"
           git add -A
-
-      - name: Commit and push to gh-pages
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "release: v${VERSION}" --allow-empty
-          git push origin gh-pages:gh-pages --force
+          git -c user.name="github-actions[bot]" -c user.email="github-actions[bot]@users.noreply.github.com" commit -m "release: v${VERSION}"
+          git push origin gh-pages
         env:
-          VERSION: ${{ github.ref_name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
