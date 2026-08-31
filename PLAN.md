@@ -1,6 +1,6 @@
 # Zotero MCP 精简版 — 实施计划（归档）
 
-> 状态：**已归档，待实施**（2026-08-31 确认方案，老大批准后执行）
+> 状态：**已实施完成**（2026-08-31 完成，v1.0.0 构建 + GitHub 开源分发就绪，待安装实测）
 > 依据：cookjohn/zotero-mcp **v1.5.0** 源码（`git clone https://github.com/cookjohn/zotero-mcp.git`）
 
 ## 背景与目标
@@ -127,3 +127,21 @@ PDF 抽取（pdfProcessor/pdfService）、全文服务（fulltextService）、�
 - 本机 Zotero 10.0（`C:\Program Files\Zotero\zotero.exe`），官方版 v1.5.0 插件位于 `...\Profiles\uwaqfgd7.default\extensions\zotero-mcp-plugin@autoagent.my.xpi`，MCP 端口 23120
 - 官方版 tools/list 共 27 个工具；v1.5.0 语义索引 0 向量（未配嵌入）
 - 副机 192.168.1.105 Ollama（11434）可作将来嵌入后端（本次不涉及）
+
+## 实施偏差记录（2026-08-31 实际执行）
+
+| # | 原始方案 | 实际执行 | 原因 |
+|---|---|---|---|
+| 1 | GitHub Pages 托管 update.json+xpi，源码推**私有**仓库 | 仓库转**公开**（`eric-sly/zotero-mcp-manager`），Pages 用 gh-pages 分支 | Free plan 私有仓库不支持 Pages（422）；私有 release 资产匿名下载 404（实测验证）。老大拍板「直接开源」 |
+| 2 | 分发通道为 GitHub Release（原 workflows） | release.yml/beta-release.yml 改为 Pages 部署（upload-pages-artifact + deploy-pages） | 与 Pages 分发方案一致 |
+| 3 | 构建产物名 `zotero-mcp-plugin.xpi` | scaffold 实际产出 `zotero-mcp-manager.xpi`（随 addonRef 命名）；Pages/workflows 里重命名为 `zotero-mcp-manager-<ver>.xpi` | 新 addonRef 生效 |
+| 4 | zotero-plugin-toolkit ^5.1.2 直接可用 | 锁到 5.2.0（`^` 解析），`ZoteroToolkit` import 改 `zotero-plugin-toolkit/ztoolkit` 子路径 | 5.2.0 把 ZoteroToolkit 移到子路径导出 |
+| 5 | zotero-types 类型正常 | annotationService.ts 两处类型错误（`.filter(Boolean)` → 类型守卫；`annotationSortIndex` string→number parseInt） | zotero-types 4.1.2 类型严格 |
+| 6 | npm install 直接可用 | 官方 registry 安装（本机 cernet 镜像 302 直链触发 npm12 EALLOWREMOTE）；overrides 把 pdfjs-dist/epubjs 的 git 依赖替换为 npm 版本 | npm 12 禁 git/remote 依赖 |
+| 7 | 插件名 "Zotero MCP Manager" | 同（manifest/package.json/locale/httpServer serverInfo/首次安装文案全同步） | — |
+| 8 | fulltextService.ts 先内联再删 | get_item_abstract 内联 `item.getField('abstractNote')`；fulltextService + pdfProcessor 一并删除（互为死代码）；textFormatter.formatPDFText 删除 | 无引用 |
+| 9 | httpServer.ts / clientConfigGenerator.ts / locale addon.ftl 工具列表 | 其中旧工具目录（search_fulltext/get_item_fulltext/get_attachment_content）一并清理 | 残留引用 |
+
+**产物**：`zotero-mcp-manager-1.0.0.xpi`（工作区根目录）；`backups/zotero-mcp-plugin-v1.5.0-official-backup.xpi`（官方版备份，md5 校验一致）
+**分发**：https://github.com/eric-sly/zotero-mcp-manager（公开）；Pages: https://eric-sly.github.io/zotero-mcp-manager/（update.json + xpi，匿名可下载，实测 200）
+**安装**：老大手动装 xpi（Add-ons → Install from file）→ 重启 Zotero → ZCode 实测 22 个保留工具
