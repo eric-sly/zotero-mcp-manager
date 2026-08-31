@@ -3,8 +3,8 @@
     "zotero-mcp-manager@autoagent.my": {
       "updates": [
         {
-          "version": "1.1.1-beta.0",
-          "update_link": "https://eric-sly.github.io/zotero-mcp-manager/zotero-manager-mcp-1.1.1-beta.0.xpi",
+          "version": "1.2.0-beta.0",
+          "update_link": "https://eric-sly.github.io/zotero-mcp-manager/zotero-manager-mcp-1.2.0-beta.0.xpi",
           "applications": {
             "zotero": {
               "strict_min_version": "6.999",
