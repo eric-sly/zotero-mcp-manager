@@ -32,15 +32,13 @@ jobs:
       - name: Prepare update manifests
         run: npm run prepare-release
 
-      - name: Publish to gh-pages
+      - name: Publish auto-update source to gh-pages
         run: |
           set -e
           VERSION=$(node -p "require('./package.json').version")
-          # Clone gh-pages into a clean temp dir (never touches the main workspace)
           rm -rf /tmp/pages
           git clone --depth 1 --branch gh-pages https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git /tmp/pages
           cd /tmp/pages
-          # Reset to a clean state: keep only release assets
           git rm -rf --ignore-unmatch . >/dev/null 2>&1 || true
           cp "$GITHUB_WORKSPACE/.scaffold/build/zotero-manager-mcp.xpi" "./zotero-manager-mcp-${VERSION}.xpi"
           cp "$GITHUB_WORKSPACE/update.json" "./update.json"
@@ -50,3 +48,18 @@ jobs:
           git push origin gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Stage release artifact
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          cp .scaffold/build/zotero-manager-mcp.xpi ./zotero-manager-mcp-${VERSION}.xpi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          body: |
+            Zotero Manager MCP ${{ github.ref_name }} auto-release.
+          files: |
+            zotero-manager-mcp-*.xpi

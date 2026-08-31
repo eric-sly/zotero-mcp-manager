@@ -38,7 +38,7 @@ jobs:
       - name: Prepare update manifests
         run: npm run prepare-release -- --beta
 
-      - name: Publish to gh-pages
+      - name: Publish auto-update source to gh-pages
         run: |
           set -e
           VERSION=$(node -p "require('./package.json').version")
@@ -54,3 +54,19 @@ jobs:
           git push origin gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Stage release artifact
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          cp .scaffold/build/zotero-manager-mcp.xpi ./zotero-manager-mcp-${VERSION}.xpi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          prerelease: true
+          body: |
+            Zotero Manager MCP ${{ github.ref_name }} beta auto-release.
+          files: |
+            zotero-manager-mcp-*.xpi
