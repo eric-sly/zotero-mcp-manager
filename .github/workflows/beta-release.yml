@@ -41,12 +41,15 @@ jobs:
       - name: Stage Pages assets into gh-pages branch
         run: |
           VERSION=$(node -p "require('./package.json').version")
+          mkdir -p /tmp/release
+          cp .scaffold/build/zotero-manager-mcp.xpi /tmp/release/zotero-manager-mcp-${VERSION}.xpi
+          cp update.json /tmp/release/update.json
+          cp update-beta.json /tmp/release/update-beta.json
           git fetch origin gh-pages --quiet || true
           git checkout -B gh-pages origin/gh-pages 2>/dev/null || git checkout -B gh-pages
-          rm -f *.xpi update.json update-beta.json
-          cp .scaffold/build/zotero-manager-mcp.xpi ./zotero-manager-mcp-${VERSION}.xpi
-          cp update.json ./update.json
-          cp update-beta.json ./update-beta.json
+          find . -maxdepth 1 -type f ! -name '.*' -delete
+          cp /tmp/release/* .
+          git add -A
 
       - name: Commit and push to gh-pages
         run: |
