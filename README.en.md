@@ -2,15 +2,9 @@
 
 [English](README.en.md) | [简体中文](README.md)
 
-> **Zotero Manager MCP** — a slim Zotero item-management MCP (Model Context Protocol) plugin. Provides metadata management, annotations, and collections. Optimized for **Zotero 10**.
+> **zotero-manager-mcp** — a Zotero item-management MCP plugin for Zotero 10.
 
----
-
-## Overview
-
-This plugin is an MCP server implementation for Zotero, focused on **metadata management and location**. It drops the bloated full-text extraction and semantic retrieval, staying light and clean around items, annotations, and collections.
-
-**Positioning:** a slim item-management MCP.
+Provides metadata management, annotations and collections for Zotero items.
 
 ---
 

@@ -2,15 +2,9 @@
 
 [English](README.en.md) | [简体中文](README.md)
 
-> **Zotero Manager MCP** — 一个精简的 Zotero 条目管理 MCP（Model Context Protocol）插件。提供元数据管理、注释、分类等能力，适配 **Zotero 10**。
+> **zotero-manager-mcp** — Zotero 条目管理 MCP 插件，适配 Zotero 10。
 
----
-
-## 简介
-
-本插件是 Zotero 的 MCP 服务器实现，面向 **元数据管理与定位**。它移除了笨重的全文抽取与语义检索，专注在条目、注释、分类的管理上，轻量干净。
-
-**定位：** 精简版条目管理 MCP。
+提供 Zotero 条目的元数据管理、注释与分类能力。
 
 ---
 
