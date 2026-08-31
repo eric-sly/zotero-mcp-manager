@@ -8,7 +8,6 @@ import {
   handleGetCollectionDetails,
   handleGetCollectionItems,
   handleGetSubcollections,
-  handleSearchFulltext,
   handleGetItemAbstract,
   handleCreateCollection,
   handleUpdateCollection,
@@ -19,7 +18,6 @@ import {
 import { UnifiedContentExtractor } from './unifiedContentExtractor';
 import { SmartAnnotationExtractor } from './smartAnnotationExtractor';
 import { MCPSettingsService } from './mcpSettingsService';
-import { getSemanticSearchService, SemanticSearchService } from './semantic';
 
 export interface MCPRequest {
   jsonrpc: '2.0';
@@ -755,34 +753,6 @@ export class StreamableMCPServer {
         },
       },
       {
-        name: 'search_fulltext',
-        description: 'Search within full-text content of all documents. Returns matching passages with context. Use get_content with itemKey for complete text of a result.',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            libraryID: {
-              type: 'number',
-              description: 'Optional target Zotero library ID. Defaults to the user library when omitted.'
-            },
-            q: { type: 'string', description: 'Search query' },
-            itemKeys: { 
-              type: 'array', 
-              items: { type: 'string' },
-              description: 'Limit search to specific items (optional)' 
-            },
-            mode: {
-              type: 'string',
-              enum: ['minimal', 'preview', 'standard', 'complete'],
-              description: 'Processing mode: minimal (100 context), preview (200), standard (adaptive), complete (400+). Uses user default if not specified.'
-            },
-            contextLength: { type: 'number', description: 'Context length around matches (overrides mode default)' },
-            maxResults: { type: 'number', description: 'Maximum results to return (overrides mode default)' },
-            caseSensitive: { type: 'boolean', description: 'Case sensitive search (default: false)' },
-          },
-          required: ['q'],
-        },
-      },
-      {
         name: 'get_item_abstract',
         description: 'Get the abstract/summary of a specific item. Typically the author\'s own summary from the original publication.',
         inputSchema: {
@@ -801,97 +771,6 @@ export class StreamableMCPServer {
           },
           required: ['itemKey'],
         },
-      },
-      // Semantic Search Tools
-      {
-        name: 'semantic_search',
-        description: 'AI-powered semantic search using embeddings. Finds conceptually related content even without exact keyword matches. Combine with keyword search (search_library, search_fulltext) for comprehensive results.',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            query: {
-              type: 'string',
-              description: 'Natural language search query (e.g., "machine learning in healthcare")'
-            },
-            topK: {
-              type: 'number',
-              description: 'Number of results to return (default: 10)'
-            },
-            minScore: {
-              type: 'number',
-              description: 'Minimum similarity score 0-1 (default: 0.3)'
-            },
-            language: {
-              type: 'string',
-              enum: ['zh', 'en', 'all'],
-              description: 'Filter by language (default: all)'
-            }
-          },
-          required: ['query']
-        }
-      },
-      {
-        name: 'find_similar',
-        description: 'Find items semantically similar to a given item using AI embeddings. Useful for expanding research from a known relevant paper and discovering thematic clusters.',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            itemKey: {
-              type: 'string',
-              description: 'The item key to find similar items for'
-            },
-            topK: {
-              type: 'number',
-              description: 'Number of similar items to return (default: 5)'
-            },
-            minScore: {
-              type: 'number',
-              description: 'Minimum similarity score 0-1 (default: 0.5)'
-            }
-          },
-          required: ['itemKey']
-        }
-      },
-      {
-        name: 'semantic_status',
-        description: 'Get the status of the semantic search service including index statistics.',
-        inputSchema: {
-          type: 'object',
-          properties: {}
-        }
-      },
-      // Full-text Database Tool (read-only operations)
-      {
-        name: 'fulltext_database',
-        description: 'Access the cached full-text content database (read-only). Faster than re-extracting from Zotero. Actions: list (cached items), search (find text), get (retrieve content), stats (database info).',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            action: {
-              type: 'string',
-              enum: ['list', 'search', 'get', 'stats'],
-              description: 'Action: list (show cached items), search (search within content), get (get full content), stats (database statistics)'
-            },
-            query: {
-              type: 'string',
-              description: 'Search query (required for search action)'
-            },
-            itemKeys: {
-              type: 'array',
-              items: { type: 'string' },
-              description: 'Item keys for get action'
-            },
-            limit: {
-              type: 'number',
-              description: 'Maximum results to return (default: 20 for list/search)'
-            },
-            caseSensitive: {
-              type: 'boolean',
-              description: 'Case sensitive search (default: false)'
-            }
-          },
-          required: ['action']
-        }
       },
       // Write Tools
       {
@@ -1068,21 +947,14 @@ export class StreamableMCPServer {
       }
     ];
 
-    // Filter out semantic tools if semantic search is disabled
-    const semanticEnabled = Zotero.Prefs.get('extensions.zotero.zotero-mcp-plugin.semantic.enabled', true);
-    const semanticToolNames = new Set(['semantic_search', 'find_similar', 'semantic_status']);
-    const filteredTools = semanticEnabled === false
-      ? tools.filter((t: any) => !semanticToolNames.has(t.name))
-      : tools;
-
     // Filter out write tools if write operations are disabled (default: disabled)
-    const writeEnabled = Zotero.Prefs.get('extensions.zotero.zotero-mcp-plugin.write.enabled', true);
+    const writeEnabled = Zotero.Prefs.get('extensions.zotero.zotero-mcp-manager.write.enabled', true);
     const writeToolNames = new Set([
       'write_note', 'write_tag', 'write_metadata', 'write_item',
     ]);
     const finalTools = writeEnabled === true
-      ? filteredTools
-      : filteredTools.filter((t: any) => !writeToolNames.has(t.name));
+      ? tools
+      : tools.filter((t: any) => !writeToolNames.has(t.name));
 
     return this.createResponse(request.id ?? null, { tools: finalTools });
   }
@@ -1168,9 +1040,9 @@ export class StreamableMCPServer {
           break;
 
         case 'create_collection': {
-          const writeEnabledCC = Zotero.Prefs.get('extensions.zotero.zotero-mcp-plugin.write.enabled', true);
+          const writeEnabledCC = Zotero.Prefs.get('extensions.zotero.zotero-mcp-manager.write.enabled', true);
           if (writeEnabledCC !== true) {
-            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Plugin → Preferences, and enable "Write Operations" to use this feature.');
+            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Manager → Preferences, and enable "Write Operations" to use this feature.');
           }
           if (!args?.name) {
             throw new Error('name is required');
@@ -1180,9 +1052,9 @@ export class StreamableMCPServer {
         }
 
         case 'update_collection': {
-          const writeEnabledUC = Zotero.Prefs.get('extensions.zotero.zotero-mcp-plugin.write.enabled', true);
+          const writeEnabledUC = Zotero.Prefs.get('extensions.zotero.zotero-mcp-manager.write.enabled', true);
           if (writeEnabledUC !== true) {
-            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Plugin → Preferences, and enable "Write Operations" to use this feature.');
+            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Manager → Preferences, and enable "Write Operations" to use this feature.');
           }
           if (!args?.collectionKey) {
             throw new Error('collectionKey is required');
@@ -1192,9 +1064,9 @@ export class StreamableMCPServer {
         }
 
         case 'delete_collection': {
-          const writeEnabledDC = Zotero.Prefs.get('extensions.zotero.zotero-mcp-plugin.write.enabled', true);
+          const writeEnabledDC = Zotero.Prefs.get('extensions.zotero.zotero-mcp-manager.write.enabled', true);
           if (writeEnabledDC !== true) {
-            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Plugin → Preferences, and enable "Write Operations" to use this feature.');
+            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Manager → Preferences, and enable "Write Operations" to use this feature.');
           }
           if (!args?.collectionKey) {
             throw new Error('collectionKey is required');
@@ -1204,9 +1076,9 @@ export class StreamableMCPServer {
         }
 
         case 'add_items_to_collection': {
-          const writeEnabledAI = Zotero.Prefs.get('extensions.zotero.zotero-mcp-plugin.write.enabled', true);
+          const writeEnabledAI = Zotero.Prefs.get('extensions.zotero.zotero-mcp-manager.write.enabled', true);
           if (writeEnabledAI !== true) {
-            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Plugin → Preferences, and enable "Write Operations" to use this feature.');
+            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Manager → Preferences, and enable "Write Operations" to use this feature.');
           }
           if (!args?.collectionKey) {
             throw new Error('collectionKey is required');
@@ -1220,9 +1092,9 @@ export class StreamableMCPServer {
         }
 
         case 'remove_items_from_collection': {
-          const writeEnabledRI = Zotero.Prefs.get('extensions.zotero.zotero-mcp-plugin.write.enabled', true);
+          const writeEnabledRI = Zotero.Prefs.get('extensions.zotero.zotero-mcp-manager.write.enabled', true);
           if (writeEnabledRI !== true) {
-            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Plugin → Preferences, and enable "Write Operations" to use this feature.');
+            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Manager → Preferences, and enable "Write Operations" to use this feature.');
           }
           if (!args?.collectionKey) {
             throw new Error('collectionKey is required');
@@ -1235,13 +1107,6 @@ export class StreamableMCPServer {
           break;
         }
 
-        case 'search_fulltext':
-          if (!args?.q) {
-            throw new Error('q (query) is required');
-          }
-          result = await this.callSearchFulltext(args);
-          break;
-
         case 'get_item_abstract':
           if (!args?.itemKey) {
             throw new Error('itemKey is required');
@@ -1249,38 +1114,11 @@ export class StreamableMCPServer {
           result = await this.callGetItemAbstract(args);
           break;
 
-        // Semantic Search Tools
-        case 'semantic_search':
-        case 'find_similar':
-        case 'semantic_status': {
-          const semEnabled = Zotero.Prefs.get('extensions.zotero.zotero-mcp-plugin.semantic.enabled', true);
-          if (semEnabled === false) {
-            throw new Error('Semantic search is disabled. Enable it in Zotero MCP Plugin preferences.');
-          }
-          if (name === 'semantic_search') {
-            if (!args?.query) throw new Error('query is required');
-            result = await this.callSemanticSearch(args);
-          } else if (name === 'find_similar') {
-            if (!args?.itemKey) throw new Error('itemKey is required');
-            result = await this.callFindSimilar(args);
-          } else {
-            result = await this.callSemanticStatus();
-          }
-          break;
-        }
-
-        case 'fulltext_database':
-          if (!args?.action) {
-            throw new Error('action is required');
-          }
-          result = await this.callFulltextDatabase(args);
-          break;
-
         // Write Tools
         case 'write_note': {
-          const writeEnabled = Zotero.Prefs.get('extensions.zotero.zotero-mcp-plugin.write.enabled', true);
+          const writeEnabled = Zotero.Prefs.get('extensions.zotero.zotero-mcp-manager.write.enabled', true);
           if (writeEnabled !== true) {
-            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Plugin → Preferences, and enable "Write Operations" to use this feature.');
+            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Manager → Preferences, and enable "Write Operations" to use this feature.');
           }
           if (!args?.action || !args?.content) {
             throw new Error('action and content are required');
@@ -1290,9 +1128,9 @@ export class StreamableMCPServer {
         }
 
         case 'write_tag': {
-          const writeEnabled2 = Zotero.Prefs.get('extensions.zotero.zotero-mcp-plugin.write.enabled', true);
+          const writeEnabled2 = Zotero.Prefs.get('extensions.zotero.zotero-mcp-manager.write.enabled', true);
           if (writeEnabled2 !== true) {
-            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Plugin → Preferences, and enable "Write Operations" to use this feature.');
+            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Manager → Preferences, and enable "Write Operations" to use this feature.');
           }
           if (!args?.action || !args?.itemKey || !args?.tags) {
             throw new Error('action, itemKey, and tags are required');
@@ -1302,9 +1140,9 @@ export class StreamableMCPServer {
         }
 
         case 'write_metadata': {
-          const writeEnabled3 = Zotero.Prefs.get('extensions.zotero.zotero-mcp-plugin.write.enabled', true);
+          const writeEnabled3 = Zotero.Prefs.get('extensions.zotero.zotero-mcp-manager.write.enabled', true);
           if (writeEnabled3 !== true) {
-            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Plugin → Preferences, and enable "Write Operations" to use this feature.');
+            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Manager → Preferences, and enable "Write Operations" to use this feature.');
           }
           if (!args?.itemKey) {
             throw new Error('itemKey is required');
@@ -1317,9 +1155,9 @@ export class StreamableMCPServer {
         }
 
         case 'write_item': {
-          const writeEnabled4 = Zotero.Prefs.get('extensions.zotero.zotero-mcp-plugin.write.enabled', true);
+          const writeEnabled4 = Zotero.Prefs.get('extensions.zotero.zotero-mcp-manager.write.enabled', true);
           if (writeEnabled4 !== true) {
-            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Plugin → Preferences, and enable "Write Operations" to use this feature.');
+            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Manager → Preferences, and enable "Write Operations" to use this feature.');
           }
           if (!args?.action) {
             throw new Error('action is required');
@@ -1648,44 +1486,6 @@ export class StreamableMCPServer {
     return response.body ? JSON.parse(response.body) : response;
   }
 
-  private async callSearchFulltext(args: any): Promise<any> {
-    // Apply mode-based defaults before creating search params
-    const effectiveMode = args.mode || MCPSettingsService.get('content.mode');
-    const modeConfig = this.getFulltextModeConfiguration(effectiveMode);
-    
-    // Apply mode defaults if not explicitly provided
-    const processedArgs = {
-      ...args,
-      contextLength: args.contextLength || modeConfig.contextLength,
-      maxResults: args.maxResults || modeConfig.maxResults
-    };
-    
-    const searchParams = new URLSearchParams();
-    for (const [key, value] of Object.entries(processedArgs)) {
-      if (value !== undefined && value !== null) {
-        if (key === 'itemKeys' && Array.isArray(value)) {
-          searchParams.append(key, value.join(','));
-        } else if (key !== 'mode') { // Don't pass mode to API
-          searchParams.append(key, String(value));
-        }
-      }
-    }
-    
-    const response = await handleSearchFulltext(searchParams);
-    let result = response.body ? JSON.parse(response.body) : response;
-    
-    // Add mode information to metadata
-    if (result && typeof result === 'object') {
-      result.metadata = {
-        ...result.metadata,
-        mode: effectiveMode,
-        appliedModeConfig: modeConfig
-      };
-    }
-    
-    return result;
-  }
-
   private async callGetItemAbstract(args: any): Promise<any> {
     const { itemKey, ...otherArgs } = args;
     const abstractParams = new URLSearchParams();
@@ -1702,228 +1502,6 @@ export class StreamableMCPServer {
     }
     const result = response.body ? JSON.parse(response.body) : response;
     return result;
-  }
-
-  // ============ Semantic Search Methods ============
-
-  private async callSemanticSearch(args: any): Promise<any> {
-    try {
-      const semanticService = getSemanticSearchService();
-      await semanticService.initialize();
-
-      const results = await semanticService.search(args.query, {
-        topK: args.topK,
-        minScore: args.minScore,
-        language: args.language
-      });
-
-      const response = {
-        mode: 'semantic',
-        query: args.query,
-        data: results,
-        metadata: {
-          extractedAt: new Date().toISOString(),
-          searchMode: 'semantic',
-          resultCount: results.length,
-          fallbackMode: semanticService.getIndexProgress().status === 'idle'
-            ? (await semanticService.getStats()).serviceStatus.fallbackMode
-            : false
-        }
-      };
-
-      return response;
-    } catch (error) {
-      ztoolkit.log(`[StreamableMCP] Semantic search error: ${error}`, 'error');
-      throw error;
-    }
-  }
-
-  private async callFindSimilar(args: any): Promise<any> {
-    try {
-      const semanticService = getSemanticSearchService();
-      await semanticService.initialize();
-
-      const results = await semanticService.findSimilar(args.itemKey, {
-        topK: args.topK,
-        minScore: args.minScore
-      });
-
-      const response = {
-        mode: 'similar',
-        sourceItemKey: args.itemKey,
-        data: results,
-        metadata: {
-          extractedAt: new Date().toISOString(),
-          resultCount: results.length
-        }
-      };
-
-      return response;
-    } catch (error) {
-      ztoolkit.log(`[StreamableMCP] Find similar error: ${error}`, 'error');
-      throw error;
-    }
-  }
-
-  private async callSemanticStatus(): Promise<any> {
-    try {
-      const semanticService = getSemanticSearchService();
-      const isReady = await semanticService.isReady();
-      const stats = isReady ? await semanticService.getStats() : null;
-      const progress = semanticService.getIndexProgress();
-
-      // Check Int8 migration status
-      let int8Status = null;
-      try {
-        const { getVectorStore } = await import('./semantic/vectorStore');
-        const vectorStore = getVectorStore();
-        await vectorStore.initialize();
-        int8Status = await vectorStore.needsInt8Migration();
-      } catch (e) {
-        // Ignore if vector store not available
-      }
-
-      let message = !isReady
-        ? 'Semantic search service not initialized'
-        : stats?.serviceStatus.fallbackMode
-          ? 'Running in fallback mode (API not configured)'
-          : `Semantic search ready with ${stats?.indexStats.totalItems || 0} indexed items`;
-
-      // Add Int8 migration suggestion if needed
-      if (int8Status?.needed) {
-        message += `. WARNING: ${int8Status.count}/${int8Status.total} vectors need Int8 migration for ~6x faster search. Run migrate_int8 to optimize.`;
-      }
-
-      return {
-        ready: isReady,
-        initialized: stats?.serviceStatus.initialized || false,
-        fallbackMode: stats?.serviceStatus.fallbackMode || false,
-        indexProgress: progress,
-        indexStats: stats?.indexStats || null,
-        int8Migration: int8Status,
-        message
-      };
-    } catch (error) {
-      ztoolkit.log(`[StreamableMCP] Semantic status error: ${error}`, 'error');
-      return {
-        ready: false,
-        error: String(error)
-      };
-    }
-  }
-
-  private async callFulltextDatabase(args: any): Promise<any> {
-    try {
-      const { getVectorStore } = await import('./semantic/vectorStore');
-      const vectorStore = getVectorStore();
-      await vectorStore.initialize();
-
-      const { action, query, itemKeys, limit = 20, caseSensitive = false } = args;
-
-      switch (action) {
-        case 'list': {
-          const cachedItems = await vectorStore.listCachedContent();
-          const limitedItems = cachedItems.slice(0, limit);
-
-          return {
-            action: 'list',
-            data: limitedItems,
-            metadata: {
-              extractedAt: new Date().toISOString(),
-              totalCached: cachedItems.length,
-              returned: limitedItems.length,
-              message: `Found ${cachedItems.length} items in full-text database`
-            }
-          };
-        }
-
-        case 'search': {
-          if (!query) {
-            throw new Error('query is required for search action');
-          }
-
-          const searchResults = await vectorStore.searchCachedContent(query, { limit, caseSensitive });
-
-          return {
-            action: 'search',
-            query,
-            data: searchResults,
-            metadata: {
-              extractedAt: new Date().toISOString(),
-              resultCount: searchResults.length,
-              caseSensitive,
-              message: `Found ${searchResults.length} items matching "${query}"`
-            }
-          };
-        }
-
-        case 'get': {
-          if (!itemKeys || itemKeys.length === 0) {
-            throw new Error('itemKeys is required for get action');
-          }
-
-          const contentMap = await vectorStore.getFullContentBatch(itemKeys);
-          const results: Array<{ itemKey: string; content: string | null; contentLength: number }> = [];
-
-          for (const key of itemKeys) {
-            const content = contentMap.get(key) || null;
-            results.push({
-              itemKey: key,
-              content,
-              contentLength: content ? content.length : 0
-            });
-          }
-
-          return {
-            action: 'get',
-            data: results,
-            metadata: {
-              extractedAt: new Date().toISOString(),
-              requested: itemKeys.length,
-              found: results.filter(r => r.content !== null).length,
-              message: `Retrieved content for ${results.filter(r => r.content !== null).length}/${itemKeys.length} items`
-            }
-          };
-        }
-
-        case 'stats': {
-          const stats = await vectorStore.getStats();
-
-          // Format size nicely
-          const formatSize = (bytes: number) => {
-            if (bytes < 1024) return `${bytes} B`;
-            if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(2)} KB`;
-            return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-          };
-
-          return {
-            action: 'stats',
-            data: {
-              cachedItems: stats.cachedContentItems,
-              cachedContentSize: stats.cachedContentSizeBytes,
-              cachedContentSizeFormatted: formatSize(stats.cachedContentSizeBytes),
-              indexedItems: stats.totalItems,
-              totalVectors: stats.totalVectors,
-              zhVectors: stats.zhVectors,
-              enVectors: stats.enVectors
-            },
-            metadata: {
-              extractedAt: new Date().toISOString(),
-              message: `Full-text database: ${stats.cachedContentItems} items, ${formatSize(stats.cachedContentSizeBytes)}`
-            }
-          };
-        }
-
-        default:
-          throw new Error(`Unknown action: ${action}. Use list, search, get, or stats. Database management is done through Zotero preferences.`);
-      }
-    } catch (error) {
-      ztoolkit.log(`[StreamableMCP] Fulltext database error: ${error}`, 'error');
-      return {
-        success: false,
-        error: String(error)
-      };
-    }
   }
 
   /**
@@ -2743,14 +2321,7 @@ export class StreamableMCPServer {
         'search_collections',
         'get_collection_details',
         'get_collection_items',
-        'search_fulltext',
         'get_item_abstract',
-        // Semantic Search Tools (read-only)
-        'semantic_search',
-        'find_similar',
-        'semantic_status',
-        // Full-text Database Tool (read-only)
-        'fulltext_database',
         // Write Tools
         'write_note',
         'write_tag',
@@ -2763,32 +2334,6 @@ export class StreamableMCPServer {
         maxConnections: 100
       }
     };
-  }
-
-  /**
-   * Get fulltext search mode configuration
-   */
-  private getFulltextModeConfiguration(mode: string): any {
-    const modeConfigs = {
-      'minimal': {
-        contextLength: 100,
-        maxResults: 20
-      },
-      'preview': {
-        contextLength: 200,
-        maxResults: 50  
-      },
-      'standard': {
-        contextLength: 250,
-        maxResults: 100
-      },
-      'complete': {
-        contextLength: 400,
-        maxResults: 200
-      }
-    };
-
-    return modeConfigs[mode as keyof typeof modeConfigs] || modeConfigs['standard'];
   }
 
   /**

@@ -1,5 +1,5 @@
 /**
- * Unified Content Extractor for Zotero MCP Plugin
+ * Unified Content Extractor for Zotero MCP Manager
  * 
  * This replaces the overlapping functionality of:
  * - get_item_pdf_content
@@ -7,7 +7,6 @@
  * - get_attachment_content
  */
 
-import { PDFProcessor } from "./pdfProcessor";
 import { MCPSettingsService } from "./mcpSettingsService";
 import { IntelligentContentProcessor, ContentControl, ProcessingResult } from "./intelligentContentProcessor";
 import { TextFormatter } from "./textFormatter";
@@ -16,7 +15,6 @@ declare let Zotero: any;
 declare let ztoolkit: ZToolkit;
 
 export interface ContentIncludeOptions {
-  pdf?: boolean;
   attachments?: boolean;
   notes?: boolean;
   abstract?: boolean;
@@ -79,7 +77,6 @@ export class UnifiedContentExtractor {
 
       // Default include all content types, but apply mode-based filtering
       const options = {
-        pdf: true,
         attachments: true,
         notes: true,
         abstract: true,
@@ -119,8 +116,8 @@ export class UnifiedContentExtractor {
         }
       }
 
-      // Extract attachments (PDF and others) with intelligent processing
-      if (options.pdf || options.attachments) {
+      // Extract attachments (non-PDF) with intelligent processing
+      if (options.attachments) {
         const attachments = await this.extractAttachments(item, options, modeConfig, effectiveMode, contentControl);
         if (attachments.length > 0) {
           result.content.attachments = attachments;
@@ -217,10 +214,9 @@ export class UnifiedContentExtractor {
         const attachment = Zotero.Items.get(attachmentID);
         const contentType = attachment.attachmentContentType;
 
-        // Filter by type based on options
-        const isPDF = this.isPDF(attachment, contentType);
-        if (isPDF && !options.pdf) continue;
-        if (!isPDF && !options.attachments) continue;
+        // Skip PDF attachments (content extraction is handled by zoterU/MinerU pipeline)
+        if (this.isPDF(attachment, contentType)) continue;
+        if (!options.attachments) continue;
 
         const attachmentContent = await this.processAttachment(attachment, modeConfig, mode, contentControl);
         if (attachmentContent && attachmentContent.content) {
@@ -398,10 +394,7 @@ export class UnifiedContentExtractor {
 
     try {
       // Unified extraction logic based on file type
-      if (this.isPDF(attachment, contentType)) {
-        content = await this.extractPDFText(filePath, attachment.id);
-        extractionMethod = 'pdf_cached_or_extracted';
-      } else if (this.isHTML(contentType)) {
+      if (this.isHTML(contentType)) {
         content = await this.extractHTMLText(filePath);
         extractionMethod = 'html_parsing';
       } else if (this.isText(contentType)) {
@@ -481,55 +474,6 @@ export class UnifiedContentExtractor {
         extractedAt: new Date().toISOString(),
         error: errorMsg
       };
-    }
-  }
-
-  /**
-   * Try to get cached fulltext from Zotero's index (much faster than extraction)
-   */
-  private async getZoteroCachedFulltext(attachmentId: number): Promise<string | null> {
-    try {
-      if (Zotero.Fulltext && Zotero.Fulltext.getItemContent) {
-        const content = await Zotero.Fulltext.getItemContent(attachmentId);
-        if (content && content.content && content.content.trim().length > 0) {
-          ztoolkit.log(`[UnifiedContentExtractor] Using Zotero cached fulltext (${content.content.length} chars)`);
-          return content.content;
-        }
-      }
-      return null;
-    } catch (error) {
-      ztoolkit.log(`[UnifiedContentExtractor] Zotero fulltext cache not available: ${error}`, "warn");
-      return null;
-    }
-  }
-
-  /**
-   * Extract text from PDF - first try Zotero cache, then fallback to PDFProcessor
-   */
-  private async extractPDFText(filePath: string, attachmentId?: number): Promise<string> {
-    // First try Zotero's cached fulltext (much faster)
-    if (attachmentId) {
-      const cachedText = await this.getZoteroCachedFulltext(attachmentId);
-      if (cachedText) {
-        return TextFormatter.formatPDFText(cachedText);
-      }
-    }
-
-    // Fallback to PDFProcessor (slower, but works for new/unindexed PDFs)
-    const processor = new PDFProcessor(ztoolkit);
-    try {
-      ztoolkit.log(`[UnifiedContentExtractor] Fallback to PDFProcessor for: ${filePath}`);
-      const rawText = await processor.extractText(filePath);
-      return TextFormatter.formatPDFText(rawText);
-    } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : String(error);
-      ztoolkit.log(`[UnifiedContentExtractor] PDF extraction failed: ${errorMsg}`, "warn");
-      if (errorMsg.includes('timed out')) {
-        return `[PDF extraction timed out - file may be too large. Try indexing the PDF in Zotero first.]`;
-      }
-      throw error;
-    } finally {
-      processor.terminate();
     }
   }
 

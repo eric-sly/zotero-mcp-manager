@@ -1,24 +1,24 @@
 {
-  "name": "zotero-mcp-plugin",
+  "name": "zotero-mcp-manager",
   "type": "module",
-  "version": "1.5.0",
-  "description": "Zotero MCP Plugin",
+  "version": "1.0.0",
+  "description": "Zotero MCP Manager - metadata management and location for Zotero",
   "config": {
-    "addonName": "Zotero MCP Plugin",
-    "addonID": "zotero-mcp-plugin@autoagent.my",
-    "addonRef": "zotero-mcp-plugin",
-    "addonInstance": "ZoteroMCP",
-    "prefsPrefix": "extensions.zotero.zotero-mcp-plugin"
+    "addonName": "Zotero MCP Manager",
+    "addonID": "zotero-mcp-manager@autoagent.my",
+    "addonRef": "zotero-mcp-manager",
+    "addonInstance": "ZoteroMCPManager",
+    "prefsPrefix": "extensions.zotero.zotero-mcp-manager"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cookjohn/zotero-mcp.git"
+    "url": "git+https://github.com/eric-sly/zotero-mcp-manager.git"
   },
-  "author": "cookjohn",
+  "author": "eric-sly",
   "bugs": {
-    "url": "https://github.com/cookjohn/zotero-mcp/issues"
+    "url": "https://github.com/eric-sly/zotero-mcp-manager/issues"
   },
-  "homepage": "https://github.com/cookjohn/zotero-mcp#readme",
+  "homepage": "https://github.com/eric-sly/zotero-mcp-manager#readme",
   "license": "MIT",
   "scripts": {
     "start": "zotero-plugin serve",
@@ -35,6 +35,12 @@
   },
   "dependencies": {
     "zotero-plugin-toolkit": "^5.1.2"
+  },
+  "overrides": {
+    "zotero-types": {
+      "pdfjs-dist": "6.3.289",
+      "epubjs": "0.3.93"
+    }
   },
   "devDependencies": {
     "@types/chai": "^5.2.2",

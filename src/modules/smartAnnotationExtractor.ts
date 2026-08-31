@@ -1,5 +1,5 @@
 /**
- * Smart Annotation Extractor for Zotero MCP Plugin
+ * Smart Annotation Extractor for Zotero MCP Manager
  * 
  * Handles PDF annotations, highlights, notes with intelligent content management
  * Replaces the overlapping functionality of:

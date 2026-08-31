@@ -150,7 +150,9 @@ export class AnnotationService {
         }
 
         const noteIds = parentItem.getNotes(false);
-        items = noteIds.map((id) => Zotero.Items.get(id)).filter(Boolean);
+        items = noteIds
+          .map((id) => Zotero.Items.get(id))
+          .filter((item): item is Zotero.Item => !!item);
       } else {
         // 获取所有笔记
         const search = new Zotero.Search();
@@ -518,7 +520,9 @@ export class AnnotationService {
         page: annotationPageLabel
           ? parseInt(annotationPageLabel, 10)
           : undefined,
-        sortIndex: annotationSortIndex,
+        sortIndex: annotationSortIndex !== undefined
+          ? parseInt(annotationSortIndex, 10) || 0
+          : undefined,
       };
     } catch (error) {
       ztoolkit.log(

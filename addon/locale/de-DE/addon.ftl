@@ -1,10 +1,10 @@
 startup-begin = Addon wird geladen
 startup-finish = Addon ist bereit
-menuitem-label = Zotero MCP Plugin: Hilfsbeispiele
-menupopup-label = Zotero MCP Plugin: Menüpopup
-menuitem-submenulabel = Zotero MCP Plugin
-menuitem-filemenulabel = Zotero MCP Plugin: Datei-Menüeintrag
-prefs-title = Zotero MCP Plugin
+menuitem-label = Zotero MCP Manager: Hilfsbeispiele
+menupopup-label = Zotero MCP Manager: Menüpopup
+menuitem-submenulabel = Zotero MCP Manager
+menuitem-filemenulabel = Zotero MCP Manager: Datei-Menüeintrag
+prefs-title = Zotero MCP Manager
 prefs-table-title = Titel
 prefs-table-detail = Details
 tabpanel-lib-tab-label = Bibliothek-Tab
@@ -301,8 +301,6 @@ config-guide-tools-header = ## Verfügbare Tools
 config-guide-tools-list =
     - search_library - Zotero-Bibliothek durchsuchen
     - get_item_details - Elementdetails abrufen
-    - get_item_fulltext - Volltext des Elements abrufen
-    - search_fulltext - Volltextsuche
     - get_collections - Sammlungsliste abrufen
     - search_annotations - Annotationen und Markierungen durchsuchen
     - Und mehr...
@@ -317,22 +315,6 @@ config-guide-troubleshooting-list =
 config-guide-generated-time = Generiert am: {$time}
 
 # Kontextmenü für semantische Indizierung
-menu-semantic-index = Semantischen Index aktualisieren
-menu-semantic-index-selected = Ausgewählte Elemente indizieren
-menu-semantic-index-all = Alle Elemente indizieren
-menu-semantic-clear-selected = Index ausgewählter Elemente löschen
-menu-semantic-clear-selected-confirm = Möchten Sie wirklich den semantischen Index für die ausgewählten Elemente löschen?
-menu-semantic-clear-selected-done = Index gelöscht für
-menu-semantic-items = Elemente
-menu-semantic-index-started = Semantische Indizierung gestartet
-menu-semantic-index-completed = Indizierung abgeschlossen
-menu-semantic-index-busy = Eine Indizierung läuft bereits, bitte warten Sie, bis sie abgeschlossen ist
-menu-semantic-index-error = Semantische Indizierung fehlgeschlagen
-menu-semantic-index-no-collection = Bitte wählen Sie eine Sammlung aus
-menu-semantic-index-no-items = Keine indizierbaren Elemente vorhanden
-
-# Sammlungs-Kontextmenü
-menu-collection-semantic-index = Semantischer Index
 menu-collection-build-index = Index aufbauen
 menu-collection-rebuild-index = Index neu aufbauen
 menu-collection-clear-index = Index löschen

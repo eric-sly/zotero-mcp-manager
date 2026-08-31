@@ -1,5 +1,5 @@
 /**
- * API Endpoint Handlers for Zotero MCP Plugin
+ * API Endpoint Handlers for Zotero MCP Manager
  */
 
 
@@ -12,7 +12,6 @@ import {
   formatCollectionTree,
 } from "./collectionFormatter";
 import { handleSearchRequest, MCPError } from "./searchEngine";
-import { FulltextService } from "./fulltextService";
 
 declare let ztoolkit: ZToolkit;
 
@@ -903,67 +902,6 @@ export async function handleGetItemAnnotations(
 
 // REMOVED: handleGetItemFulltext - replaced by unified get_content tool
 
-// REMOVED: handleGetAttachmentContent - replaced by unified get_content tool
-
-/**
- * Handles GET /search/fulltext endpoint.
- * @param query - URL query parameters.
- * @returns A promise that resolves to an HttpResponse.
- */
-export async function handleSearchFulltext(
-  query: URLSearchParams,
-): Promise<HttpResponse> {
-  const q = query.get("q");
-  if (!q || q.trim().length === 0) {
-    return {
-      status: 400,
-      statusText: "Bad Request",
-      headers: { "Content-Type": "application/json; charset=utf-8" },
-      body: JSON.stringify({ error: "Missing query parameter 'q'" }),
-    };
-  }
-
-  ztoolkit.log(`[MCP ApiHandlers] Searching fulltext for: "${q}"`);
-
-  try {
-    const libraryID = resolveLibraryID(query);
-    const fulltextService = new FulltextService();
-    
-    // Parse search options
-    const options = {
-      libraryID,
-      itemKeys: query.get("itemKeys")?.split(",") || null,
-      contextLength: parseInt(query.get("contextLength") || "200", 10),
-      maxResults: Math.min(parseInt(query.get("maxResults") || "50", 10), 200),
-      caseSensitive: query.get("caseSensitive") === "true"
-    };
-
-    const searchResult = await fulltextService.searchFulltext(q, options);
-
-    return {
-      status: 200,
-      statusText: "OK",
-      headers: { "Content-Type": "application/json; charset=utf-8" },
-      body: JSON.stringify(searchResult, null, 2),
-    };
-  } catch (e) {
-    const error = e instanceof Error ? e : new Error(String(e));
-    const status = (error as any).status || 500;
-    ztoolkit.log(
-      `[MCP ApiHandlers] Error in handleSearchFulltext: ${error.message}`,
-      "error",
-    );
-    Zotero.logError(error);
-
-    return {
-      status,
-      statusText: status === 400 ? "Bad Request" : "Internal Server Error",
-      headers: { "Content-Type": "application/json; charset=utf-8" },
-      body: JSON.stringify({ error: status === 400 ? error.message : "An unexpected error occurred" }),
-    };
-  }
-}
-
 /**
  * Handles GET /items/:itemKey/abstract endpoint.
  * @param params - URL parameters, where params[1] is the itemKey.
@@ -1002,8 +940,7 @@ export async function handleGetItemAbstract(
       };
     }
 
-    const fulltextService = new FulltextService();
-    const abstract = fulltextService.getItemAbstract(item);
+    const abstract = item.getField("abstractNote");
 
     if (!abstract) {
       return {

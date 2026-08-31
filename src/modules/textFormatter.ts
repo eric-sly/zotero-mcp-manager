@@ -1,5 +1,5 @@
 /**
- * Text Formatting Utilities for Zotero MCP Plugin
+ * Text Formatting Utilities for Zotero MCP Manager
  * Handles conversion from HTML to well-formatted plain text while preserving structure
  */
 
@@ -254,68 +254,6 @@ export class TextFormatter {
    */
   private static stripTags(html: string): string {
     return html.replace(/<[^>]*>/g, '');
-  }
-
-  /**
-   * Format raw PDF text by fixing common PDF extraction issues
-   */
-  static formatPDFText(rawText: string): string {
-    if (!rawText || typeof rawText !== 'string') {
-      return '';
-    }
-
-    try {
-      let text = rawText;
-
-      // Fix line breaks that split words
-      text = text.replace(/(\w)-\n(\w)/g, '$1$2'); // hyphenated words across lines
-      text = text.replace(/(\w)\n(\w)/g, '$1 $2'); // words broken across lines
-
-      // Normalize spaces and tabs
-      text = text.replace(/\t/g, ' '); // tabs to spaces
-      text = text.replace(/ {3,}/g, '  '); // multiple spaces to double space
-      
-      // Fix paragraph detection
-      // Single newlines become spaces, double newlines become paragraph breaks
-      text = text.replace(/\n\n+/g, '¶¶'); // temporarily mark real paragraph breaks
-      text = text.replace(/\n/g, ' '); // single newlines become spaces
-      text = text.replace(/¶¶/g, '\n\n'); // restore paragraph breaks
-      
-      // Clean up common PDF artifacts
-      text = text.replace(/\f/g, '\n\n'); // form feeds to paragraph breaks
-      text = text.replace(/[\u00A0\u2000-\u200B\u2028\u2029]/g, ' '); // various unicode spaces
-      
-      // Remove repeated headers/footers (simple heuristic)
-      const lines = text.split('\n');
-      if (lines.length > 10) {
-        // Look for lines that repeat frequently (likely headers/footers)
-        const lineFreq: { [key: string]: number } = {};
-        lines.forEach(line => {
-          const cleanLine = line.trim();
-          if (cleanLine.length > 5 && cleanLine.length < 100) {
-            lineFreq[cleanLine] = (lineFreq[cleanLine] || 0) + 1;
-          }
-        });
-
-        // Remove lines that appear more than 3 times (likely headers/footers)
-        const filteredLines = lines.filter(line => {
-          const cleanLine = line.trim();
-          return !lineFreq[cleanLine] || lineFreq[cleanLine] <= 3;
-        });
-        
-        if (filteredLines.length < lines.length * 0.9) { // Only if we removed less than 10%
-          text = filteredLines.join('\n');
-        }
-      }
-
-      // Final cleanup
-      text = this.cleanupWhitespace(text);
-
-      return text;
-    } catch (error) {
-      ztoolkit.log(`[TextFormatter] Error formatting PDF text: ${error}`, 'error');
-      return rawText.trim();
-    }
   }
 
   /**

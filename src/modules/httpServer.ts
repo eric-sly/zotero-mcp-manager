@@ -801,12 +801,12 @@ export class HttpServer {
 private getCapabilities() {
   return {
     serverInfo: {
-      name: "Zotero MCP Plugin",
-      version: "1.1.0",
-      description: "Model Context Protocol integration for Zotero research management",
-      author: "Zotero MCP Team",
-      repository: "https://github.com/zotero/zotero-mcp",
-      documentation: "https://github.com/zotero/zotero-mcp/blob/main/README.md"
+      name: "Zotero MCP Manager",
+      version: "1.0.0",
+      description: "Model Context Protocol integration for Zotero metadata management",
+      author: "eric-sly",
+      repository: "https://github.com/eric-sly/zotero-mcp-manager",
+      documentation: "https://github.com/eric-sly/zotero-mcp-manager/blob/main/README.md"
     },
     protocols: {
       mcp: {
@@ -1012,48 +1012,6 @@ private getCapabilities() {
           limit: { type: "number", description: "Maximum results to return", required: false },
           offset: { type: "number", description: "Pagination offset", required: false }
         }
-      },
-      {
-        name: "get_item_fulltext",
-        description: "Get comprehensive fulltext content from item including attachments, notes, abstracts, and webpage snapshots. Returns: {itemKey, title, itemType, abstract, fulltext: {attachments: [{attachmentKey, filename, filePath, contentType, type, content, length, extractionMethod}], notes: [{noteKey, title, content, htmlContent, length, dateModified}], webpage: {url, filename, filePath, content, length, type}, total_length}, metadata: {extractedAt, sources}}",
-        category: "fulltext",
-        parameters: {
-          itemKey: { type: "string", description: "Item key", required: true },
-          attachments: { type: "boolean", description: "Include attachment content (default: true)", required: false },
-          notes: { type: "boolean", description: "Include notes content (default: true)", required: false },
-          webpage: { type: "boolean", description: "Include webpage snapshots (default: true)", required: false },
-          abstract: { type: "boolean", description: "Include abstract (default: true)", required: false }
-        },
-        examples: [
-          { query: { itemKey: "ABCD1234" }, description: "Get all fulltext content for an item" },
-          { query: { itemKey: "ABCD1234", attachments: true, notes: false }, description: "Get only attachment content" }
-        ]
-      },
-      {
-        name: "get_attachment_content",
-        description: "Extract text content from a specific attachment (PDF, HTML, text files). Returns: {attachmentKey, filename, filePath, contentType, type, content, length, extractionMethod, extractedAt}",
-        category: "fulltext",
-        parameters: {
-          attachmentKey: { type: "string", description: "Attachment key", required: true },
-          format: { type: "string", enum: ["json", "text"], description: "Response format (default: json)", required: false }
-        }
-      },
-      {
-        name: "search_fulltext",
-        description: "Search within fulltext content of items with context and relevance scoring",
-        category: "fulltext",
-        parameters: {
-          libraryID: { type: "number", description: "Optional target Zotero library ID. Defaults to the user library when omitted.", required: false },
-          q: { type: "string", description: "Search query", required: true },
-          itemKeys: { type: "array", items: { type: "string" }, description: "Limit search to specific items (optional)", required: false },
-          contextLength: { type: "number", description: "Context length around matches (default: 200)", required: false },
-          maxResults: { type: "number", description: "Maximum results to return (default: 50)", required: false },
-          caseSensitive: { type: "boolean", description: "Case sensitive search (default: false)", required: false }
-        },
-        examples: [
-          { query: { q: "machine learning" }, description: "Search for 'machine learning' in all fulltext" },
-          { query: { q: "neural networks", maxResults: 10, contextLength: 100 }, description: "Limited context search" }
-        ]
       },
       {
         name: "get_item_abstract",

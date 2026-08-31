@@ -301,8 +301,6 @@ config-guide-tools-header = ## Herramientas disponibles
 config-guide-tools-list =
     - search_library - Buscar en la biblioteca de Zotero
     - get_item_details - Obtener detalles del elemento
-    - get_item_fulltext - Obtener texto completo del elemento
-    - search_fulltext - Búsqueda de texto completo
     - get_collections - Obtener lista de colecciones
     - search_annotations - Buscar anotaciones y resaltados
     - Y más...
@@ -317,22 +315,6 @@ config-guide-troubleshooting-list =
 config-guide-generated-time = Generado el: {$time}
 
 # Menú contextual para indexación semántica
-menu-semantic-index = Actualizar índice semántico
-menu-semantic-index-selected = Indexar elementos seleccionados
-menu-semantic-index-all = Indexar todos los elementos
-menu-semantic-clear-selected = Limpiar índice de elementos seleccionados
-menu-semantic-clear-selected-confirm = ¿Estás seguro de que deseas limpiar el índice semántico de los elementos seleccionados?
-menu-semantic-clear-selected-done = Índice limpiado para
-menu-semantic-items = elementos
-menu-semantic-index-started = Indexación semántica iniciada
-menu-semantic-index-completed = Indexación completada
-menu-semantic-index-busy = Ya hay una indexación en curso, espere a que termine
-menu-semantic-index-error = La indexación semántica falló
-menu-semantic-index-no-collection = Por favor, selecciona una colección
-menu-semantic-index-no-items = No hay elementos indexables
-
-# Menú contextual de colección
-menu-collection-semantic-index = Índice semántico
 menu-collection-build-index = Construir índice
 menu-collection-rebuild-index = Reconstruir índice
 menu-collection-clear-index = Limpiar índice

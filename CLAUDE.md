@@ -1,22 +1,18 @@
-# Zotero MCP Plugin
+# Zotero MCP Manager
 
 ## Project Overview
-A Zotero plugin that provides MCP (Model Context Protocol) server functionality, enabling AI assistants to interact with Zotero's library data.
+A Zotero plugin that provides MCP (Model Context Protocol) server functionality for **metadata management and location**. Fork of cookjohn/zotero-mcp v1.5.0 with full-text extraction, fulltext service, and semantic search removed.
 
 ## Tech Stack
 - TypeScript
 - Zotero Plugin API (Firefox/Gecko-based)
 - zotero-plugin-scaffold for building
-- SQLite for semantic search index
 
 ## Key Directories
 - `src/` - TypeScript source code
 - `addon/` - Plugin assets (manifest, locales, preferences UI)
 - `.scaffold/build/` - Build output
-- `update.json` - Zotero auto-update manifest
-
-## Available Skills
-- `release` - Automate version bump, XPI build, and GitHub release. See `../.claude/skills/release.md`
+- `update.json` - Zotero auto-update manifest (hosted on GitHub Pages)
 
 ## Build Commands
 ```bash
@@ -27,7 +23,7 @@ npm run start      # Development with hot reload
 ## Important Patterns
 
 ### Preferences
-- Prefix: `extensions.zotero.zotero-mcp-plugin`
+- Prefix: `extensions.zotero.zotero-mcp-manager`
 - Defined in `addon/content/preferences.xhtml`
 - Accessed via `Zotero.Prefs.get/set`
 
@@ -36,13 +32,14 @@ npm run start      # Development with hot reload
 - Chinese: `addon/locale/zh-CN/preferences.ftl`
 
 ### Release Workflow
-See `../.claude/skills/release.md` for automated release process.
+Zotero auto-update is anonymous HTTP, so release assets are hosted on **GitHub Pages** (not private release assets):
+- `update.json` + `zotero-mcp-manager-<version>.xpi` → `https://eric-sly.github.io/zotero-mcp-manager/`
+- Source repo is private: `https://github.com/eric-sly/zotero-mcp-manager`
 
 Key points:
-- Version in: `package.json`, `README.md`, `README-zh.md` (badge), `update.json`
+- Version in: `package.json`, `update.json`
 - Build: `npm run build` → `.scaffold/build/zotero-mcp-plugin.xpi`
-- `addon/` is gitignored — use `git add -f` for files under it
-- Release assets: XPI (renamed to `zotero-mcp-plugin-X.Y.Z.xpi`) + `update.json`
+- Release: tag `vX.Y.Z` → `release.yml` builds + deploys Pages assets
 
 ## Code Style
 - Use ztoolkit.log for logging

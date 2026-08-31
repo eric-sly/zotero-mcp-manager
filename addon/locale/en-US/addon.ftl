@@ -1,10 +1,10 @@
 startup-begin = Addon is loading
 startup-finish = Addon is ready
-menuitem-label = Zotero MCP Plugin: Helper Examples
-menupopup-label = Zotero MCP Plugin: Menupopup
-menuitem-submenulabel = Zotero MCP Plugin
-menuitem-filemenulabel = Zotero MCP Plugin: File Menuitem
-prefs-title = Zotero MCP Plugin
+menuitem-label = Zotero MCP Manager: Helper Examples
+menupopup-label = Zotero MCP Manager: Menupopup
+menuitem-submenulabel = Zotero MCP Manager
+menuitem-filemenulabel = Zotero MCP Manager: File Menuitem
+prefs-title = Zotero MCP Manager
 prefs-table-title = Title
 prefs-table-detail = Detail
 tabpanel-lib-tab-label = Lib Tab
@@ -301,8 +301,6 @@ config-guide-tools-header = ## Available Tools
 config-guide-tools-list = 
     - search_library - Search Zotero library
     - get_item_details - Get item details
-    - get_item_fulltext - Get item full text content
-    - search_fulltext - Full text search
     - get_collections - Get collections list
     - search_annotations - Search annotations and highlights
     - And more...
@@ -315,26 +313,3 @@ config-guide-troubleshooting-list =
     4. Verify configuration file format is correct
 
 config-guide-generated-time = Generated at: {$time}
-
-# Context menu for semantic indexing
-menu-semantic-index = Update Semantic Index
-menu-semantic-index-selected = Index Selected Items
-menu-semantic-index-all = Index All Items
-menu-semantic-clear-selected = Clear Selected Items Index
-menu-semantic-clear-selected-confirm = Are you sure you want to clear the semantic index for the selected items?
-menu-semantic-clear-selected-done = Index cleared for
-menu-semantic-items = items
-menu-semantic-index-started = Semantic indexing started
-menu-semantic-index-completed = Indexing completed
-menu-semantic-index-busy = An index build is already running, please wait for it to finish
-menu-semantic-index-error = Semantic indexing failed
-menu-semantic-index-no-collection = Please select a collection
-menu-semantic-index-no-items = No indexable items
-
-# Collection context menu
-menu-collection-semantic-index = Semantic Index
-menu-collection-build-index = Build Index
-menu-collection-rebuild-index = Rebuild Index
-menu-collection-clear-index = Clear Index
-menu-collection-clear-confirm = Are you sure you want to clear the semantic index for this collection?
-menu-collection-index-cleared = Index cleared

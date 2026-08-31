@@ -1,10 +1,10 @@
 startup-begin = アドオンを読み込んでいます
 startup-finish = アドオンの準備が完了しました
-menuitem-label = Zotero MCP Plugin: ヘルパーサンプル
-menupopup-label = Zotero MCP Plugin: メニューポップアップ
-menuitem-submenulabel = Zotero MCP Plugin
-menuitem-filemenulabel = Zotero MCP Plugin: ファイルメニュー項目
-prefs-title = Zotero MCP Plugin
+menuitem-label = Zotero MCP Manager: ヘルパーサンプル
+menupopup-label = Zotero MCP Manager: メニューポップアップ
+menuitem-submenulabel = Zotero MCP Manager
+menuitem-filemenulabel = Zotero MCP Manager: ファイルメニュー項目
+prefs-title = Zotero MCP Manager
 prefs-table-title = タイトル
 prefs-table-detail = 詳細
 tabpanel-lib-tab-label = ライブラリタブ
@@ -301,8 +301,6 @@ config-guide-tools-header = ## 利用可能なツール
 config-guide-tools-list =
     - search_library - Zoteroライブラリを検索
     - get_item_details - アイテムの詳細を取得
-    - get_item_fulltext - アイテムの全文コンテンツを取得
-    - search_fulltext - 全文検索
     - get_collections - コレクション一覧を取得
     - search_annotations - 注釈とハイライトを検索
     - その他...
@@ -316,25 +314,3 @@ config-guide-troubleshooting-list =
 
 config-guide-generated-time = 生成日時: {$time}
 
-# Context menu for semantic indexing
-menu-semantic-index = セマンティックインデックスを更新
-menu-semantic-index-selected = 選択したアイテムをインデックス
-menu-semantic-index-all = すべてのアイテムをインデックス
-menu-semantic-clear-selected = 選択したアイテムのインデックスをクリア
-menu-semantic-clear-selected-confirm = 選択したアイテムのセマンティックインデックスをクリアしますか？
-menu-semantic-clear-selected-done = インデックスをクリアしました:
-menu-semantic-items = 件のアイテム
-menu-semantic-index-started = セマンティックインデックスを開始しました
-menu-semantic-index-completed = インデックス作成が完了しました
-menu-semantic-index-busy = インデックス作成がすでに実行中です。完了をお待ちください
-menu-semantic-index-error = セマンティックインデックスに失敗しました
-menu-semantic-index-no-collection = コレクションを選択してください
-menu-semantic-index-no-items = インデックス可能なアイテムがありません
-
-# Collection context menu
-menu-collection-semantic-index = セマンティックインデックス
-menu-collection-build-index = インデックスを構築
-menu-collection-rebuild-index = インデックスを再構築
-menu-collection-clear-index = インデックスをクリア
-menu-collection-clear-confirm = このコレクションのセマンティックインデックスをクリアしますか？
-menu-collection-index-cleared = インデックスをクリアしました

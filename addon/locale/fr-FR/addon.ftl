@@ -301,8 +301,6 @@ config-guide-tools-header = ## Outils disponibles
 config-guide-tools-list =
     - search_library - Rechercher dans la bibliotheque Zotero
     - get_item_details - Obtenir les details d'un element
-    - get_item_fulltext - Obtenir le texte integral d'un element
-    - search_fulltext - Recherche en texte integral
     - get_collections - Obtenir la liste des collections
     - search_annotations - Rechercher les annotations et surlignages
     - Et plus encore...
@@ -316,25 +314,3 @@ config-guide-troubleshooting-list =
 
 config-guide-generated-time = Genere le : {$time}
 
-# Context menu for semantic indexing
-menu-semantic-index = Mettre a jour l'index semantique
-menu-semantic-index-selected = Indexer les elements selectionnes
-menu-semantic-index-all = Indexer tous les elements
-menu-semantic-clear-selected = Effacer l'index des elements selectionnes
-menu-semantic-clear-selected-confirm = Etes-vous sur de vouloir effacer l'index semantique des elements selectionnes ?
-menu-semantic-clear-selected-done = Index efface pour
-menu-semantic-items = elements
-menu-semantic-index-started = Indexation semantique demarree
-menu-semantic-index-completed = Indexation terminee
-menu-semantic-index-busy = Une indexation est deja en cours, veuillez attendre la fin
-menu-semantic-index-error = Echec de l'indexation semantique
-menu-semantic-index-no-collection = Veuillez selectionner une collection
-menu-semantic-index-no-items = Aucun element indexable
-
-# Collection context menu
-menu-collection-semantic-index = Index semantique
-menu-collection-build-index = Construire l'index
-menu-collection-rebuild-index = Reconstruire l'index
-menu-collection-clear-index = Effacer l'index
-menu-collection-clear-confirm = Etes-vous sur de vouloir effacer l'index semantique de cette collection ?
-menu-collection-index-cleared = Index efface

@@ -7,11 +7,11 @@ export default defineConfig({
   name: pkg.config.addonName,
   id: pkg.config.addonID,
   namespace: pkg.config.addonRef,
-  updateURL: `https://github.com/cookjohn/zotero-mcp/releases/latest/download/${
+  updateURL: `https://eric-sly.github.io/zotero-mcp-manager/${
     pkg.version.includes("-") ? "update-beta.json" : "update.json"
   }`,
   xpiDownloadLink:
-    "https://github.com/{{owner}}/{{repo}}/releases/download/v{{version}}/{{xpiName}}.xpi",
+    "https://eric-sly.github.io/zotero-mcp-manager/{{xpiName}}.xpi",
 
   build: {
     assets: ["addon/**/*.*"],

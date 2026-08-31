@@ -17,11 +17,11 @@ const {
   config: { addonID },
 } = packageJson;
 
-const repoUrl = "https://github.com/cookjohn/zotero-mcp";
+const repoUrl = "https://eric-sly.github.io/zotero-mcp-manager";
 
 function generateUpdateJson(isBeta = false) {
   const currentVersion = isBeta ? `${version}-beta.0` : version;
-  const updateLink = `${repoUrl}/releases/download/v${currentVersion}/zotero-mcp-plugin-${currentVersion}.xpi`;
+  const updateLink = `${repoUrl}/zotero-mcp-manager-${currentVersion}.xpi`;
 
   return {
     addons: {
@@ -33,7 +33,7 @@ function generateUpdateJson(isBeta = false) {
             applications: {
               zotero: {
                 strict_min_version: "6.999",
-                strict_max_version: "9.*",
+                strict_max_version: "10.99.99",
               },
             },
           },

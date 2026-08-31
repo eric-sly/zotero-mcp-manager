@@ -7,10 +7,15 @@ on:
       - "v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+"
 
 jobs:
-  build-and-release:
+  build-and-publish:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -33,28 +38,23 @@ jobs:
           name: build-output-beta
           path: .scaffold/build/
 
-      - name: Prepare release assets
+      - name: Prepare update manifests
         run: npm run prepare-release -- --beta
 
-      - name: Get plugin info
-        id: plugin-info
+      - name: Stage Pages assets
         run: |
           VERSION=$(node -p "require('./package.json').version")
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          # Copy and rename the xpi file with version number
-          cp .scaffold/build/zotero-mcp-plugin.xpi ./zotero-mcp-plugin-${VERSION}.xpi
-          echo "xpi_filename=zotero-mcp-plugin-${VERSION}.xpi" >> $GITHUB_OUTPUT
+          mkdir -p public
+          cp .scaffold/build/zotero-mcp-plugin.xpi ./public/zotero-mcp-manager-${VERSION}.xpi
+          cp update.json ./public/update.json
+          cp update-beta.json ./public/update-beta.json
 
-      - name: Create GitHub Release
-        id: create_release
-        uses: softprops/action-gh-release@v2
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          files: |
-            ${{ steps.plugin-info.outputs.xpi_filename }}
-            update-beta.json
-          tag_name: v${{ steps.plugin-info.outputs.version }}
-          name: Beta Release v${{ steps.plugin-info.outputs.version }}
-          body: |
-            Beta release notes for version ${{ steps.plugin-info.outputs.version }}.
-          draft: false
-          prerelease: true
+          path: ./public
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+

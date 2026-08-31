@@ -1,10 +1,10 @@
 startup-begin = 插件加载中
 startup-finish = 插件已就绪
-menuitem-label = Zotero MCP Plugin: 帮助工具样例
-menupopup-label = Zotero MCP Plugin: 弹出菜单
-menuitem-submenulabel = Zotero MCP Plugin：子菜单
-menuitem-filemenulabel = Zotero MCP Plugin: 文件菜单
-prefs-title = Zotero MCP Plugin
+menuitem-label = Zotero MCP Manager: 帮助工具样例
+menupopup-label = Zotero MCP Manager: 弹出菜单
+menuitem-submenulabel = Zotero MCP Manager：子菜单
+menuitem-filemenulabel = Zotero MCP Manager: 文件菜单
+prefs-title = Zotero MCP Manager
 prefs-table-title = 标题
 prefs-table-detail = 详情
 tabpanel-lib-tab-label = 库标签
@@ -301,8 +301,6 @@ config-guide-tools-header = ## 可用工具
 config-guide-tools-list = 
     - search_library - 搜索 Zotero 文库
     - get_item_details - 获取文献详细信息
-    - get_item_fulltext - 获取文献全文内容
-    - search_fulltext - 全文搜索
     - get_collections - 获取收藏夹列表
     - search_annotations - 搜索注释和标注
     - 以及更多...
@@ -317,22 +315,6 @@ config-guide-troubleshooting-list =
 config-guide-generated-time = 生成时间: {$time}
 
 # 语义索引右键菜单
-menu-semantic-index = 更新语义索引
-menu-semantic-index-selected = 索引选中条目
-menu-semantic-index-all = 索引所有条目
-menu-semantic-clear-selected = 清除选中条目索引
-menu-semantic-clear-selected-confirm = 确定要清除选中条目的语义索引吗？
-menu-semantic-clear-selected-done = 已清除索引的条目数
-menu-semantic-items = 条
-menu-semantic-index-started = 语义索引已开始
-menu-semantic-index-completed = 索引完成
-menu-semantic-index-busy = 已有索引任务正在运行，请等待其完成
-menu-semantic-index-error = 语义索引失败
-menu-semantic-index-no-collection = 请选择一个分类
-menu-semantic-index-no-items = 没有可索引的条目
-
-# 分类右键菜单
-menu-collection-semantic-index = 语义索引
 menu-collection-build-index = 构建索引
 menu-collection-rebuild-index = 重建索引
 menu-collection-clear-index = 清除索引
