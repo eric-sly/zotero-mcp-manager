@@ -801,7 +801,7 @@ private getCapabilities() {
   return {
     serverInfo: {
       name: "zotero-manager-mcp",
-      version: "1.0.0",
+      version: "1.1.0",
       description: "Model Context Protocol integration for Zotero metadata management",
       author: "eric-sly",
       repository: "https://github.com/eric-sly/zotero-mcp-manager",

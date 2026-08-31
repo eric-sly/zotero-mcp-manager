@@ -5,6 +5,7 @@
  */
 
 declare let ztoolkit: ZToolkit;
+import { MCPSettingsService } from "./mcpSettingsService";
 
 export interface ContentControl {
   preserveOriginal?: boolean;        // 保持原文完整性 (默认true)
@@ -473,14 +474,13 @@ export class IntelligentContentProcessor {
    * Get base mode configuration
    */
   private getModeConfiguration(mode: string): any {
-    const configs = {
-      'minimal': { maxContentLength: 500, maxAttachments: 2, maxNotes: 3 },
-      'preview': { maxContentLength: 1500, maxAttachments: 5, maxNotes: 8 },
-      'smart': { maxContentLength: 3000, maxAttachments: 10, maxNotes: 15 },
-      'full': { maxContentLength: -1, maxAttachments: -1, maxNotes: -1 }
+    // Use unified mode settings from MCPSettingsService (single source of truth)
+    const settings = MCPSettingsService.getEffectiveSettings();
+    return {
+      maxContentLength: settings.maxContentLength,
+      maxAttachments: settings.maxAttachments,
+      maxNotes: settings.maxNotes
     };
-    
-    return configs[mode as keyof typeof configs] || configs['smart'];
   }
 
   /**

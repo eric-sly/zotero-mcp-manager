@@ -602,41 +602,15 @@ export class UnifiedContentExtractor {
    * Get mode-specific configuration
    */
   private getModeConfiguration(mode: string): any {
-    const presets = MCPSettingsService.getEffectiveSettings();
-    
-    // Mode-specific configurations based on SmartAnnotationExtractor patterns
-    const modeConfigs = {
-      'minimal': {
-        maxContentLength: 500,
-        maxAttachments: 2,
-        maxNotes: 3,
-        includeWebpage: false,
-        enableCompression: true
-      },
-      'preview': {
-        maxContentLength: 1500,
-        maxAttachments: 5,
-        maxNotes: 8,
-        includeWebpage: false,
-        enableCompression: true
-      },
-      'standard': {
-        maxContentLength: 3000,
-        maxAttachments: 10,
-        maxNotes: 15,
-        includeWebpage: true,
-        enableCompression: true
-      },
-      'complete': {
-        maxContentLength: -1, // No limit
-        maxAttachments: -1,   // No limit
-        maxNotes: -1,         // No limit
-        includeWebpage: true,
-        enableCompression: false
-      }
+    // Use the unified mode settings from MCPSettingsService (single source of truth)
+    const settings = MCPSettingsService.getEffectiveSettings();
+    return {
+      maxContentLength: settings.maxContentLength,
+      maxAttachments: settings.maxAttachments,
+      maxNotes: settings.maxNotes,
+      includeWebpage: settings.includeWebpage,
+      enableCompression: settings.enableCompression
     };
-
-    return modeConfigs[mode as keyof typeof modeConfigs] || modeConfigs['standard'];
   }
 
   /**
