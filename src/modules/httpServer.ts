@@ -801,7 +801,7 @@ private getCapabilities() {
   return {
     serverInfo: {
       name: "zotero-manager-mcp",
-      version: "1.2.0",
+      version: "1.2.1",
       description: "Model Context Protocol integration for Zotero metadata management",
       author: "eric-sly",
       repository: "https://github.com/eric-sly/zotero-mcp-manager",
@@ -815,7 +815,7 @@ private getCapabilities() {
         description: "Full MCP protocol support for AI clients"
       },
       rest: {
-        version: "1.2.0",
+        version: "1.2.1",
         description: "REST API for direct HTTP access",
         baseUrl: `http://127.0.0.1:${this.port}`
       }

@@ -59,7 +59,7 @@ export class StreamableMCPServer {
   private isInitialized: boolean = false;
   private serverInfo = {
     name: 'zotero-mcp-manager',
-    version: '1.2.0',
+    version: '1.2.1',
   };
   private clientSessions: Map<string, { initTime: Date; lastActivity: Date; clientInfo?: any }> = new Map();
 
