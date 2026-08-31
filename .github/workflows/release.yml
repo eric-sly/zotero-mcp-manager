@@ -4,20 +4,18 @@ on:
   push:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
+  workflow_dispatch:
 
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout repository
+      - name: Checkout repository (main)
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -34,20 +32,22 @@ jobs:
       - name: Prepare update manifests
         run: npm run prepare-release
 
-      - name: Stage Pages assets
+      - name: Stage Pages assets into gh-pages branch
         run: |
           VERSION=$(node -p "require('./package.json').version")
-          mkdir -p public
-          cp .scaffold/build/zotero-manager-mcp.xpi ./public/zotero-manager-mcp-${VERSION}.xpi
-          cp update.json ./public/update.json
-          cp update-beta.json ./public/update-beta.json
+          git fetch origin gh-pages --quiet || true
+          git checkout -B gh-pages origin/gh-pages 2>/dev/null || git checkout -B gh-pages --orphan || git checkout -B gh-pages
+          rm -f *.xpi update.json update-beta.json
+          cp .scaffold/build/zotero-manager-mcp.xpi ./zotero-manager-mcp-${VERSION}.xpi
+          cp update.json ./update.json
+          cp update-beta.json ./update-beta.json
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./public
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-
+      - name: Commit and push to gh-pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "release: v${VERSION}" --allow-empty
+          git push origin gh-pages:gh-pages --force
+        env:
+          VERSION: ${{ github.ref_name }}
