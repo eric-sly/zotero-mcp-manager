@@ -474,12 +474,14 @@ export class IntelligentContentProcessor {
    * Get base mode configuration
    */
   private getModeConfiguration(mode: string): any {
-    // Use unified mode settings from MCPSettingsService (single source of truth)
-    const settings = MCPSettingsService.getEffectiveSettings();
+    // Use unified mode settings from MCPSettingsService (single source of truth).
+    const modesInfo = MCPSettingsService.getModesInfo();
+    const targetMode = (mode && modesInfo.available[mode]) ? mode : modesInfo.current;
+    const cfg = modesInfo.available[targetMode] || modesInfo.available.standard;
     return {
-      maxContentLength: settings.maxContentLength,
-      maxAttachments: settings.maxAttachments,
-      maxNotes: settings.maxNotes
+      maxContentLength: cfg.maxContentLength,
+      maxAttachments: cfg.maxAttachments,
+      maxNotes: cfg.maxNotes
     };
   }
 

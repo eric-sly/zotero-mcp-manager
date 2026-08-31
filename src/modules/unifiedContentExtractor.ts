@@ -602,14 +602,18 @@ export class UnifiedContentExtractor {
    * Get mode-specific configuration
    */
   private getModeConfiguration(mode: string): any {
-    // Use the unified mode settings from MCPSettingsService (single source of truth)
-    const settings = MCPSettingsService.getEffectiveSettings();
+    // Use unified mode settings from MCPSettingsService (single source of truth).
+    // If an explicit mode is passed, use that mode's UNIFIED_MODES values;
+    // otherwise fall back to the currently selected content mode.
+    const modesInfo = MCPSettingsService.getModesInfo();
+    const targetMode = (mode && modesInfo.available[mode]) ? mode : modesInfo.current;
+    const cfg = modesInfo.available[targetMode] || modesInfo.available.standard;
     return {
-      maxContentLength: settings.maxContentLength,
-      maxAttachments: settings.maxAttachments,
-      maxNotes: settings.maxNotes,
-      includeWebpage: settings.includeWebpage,
-      enableCompression: settings.enableCompression
+      maxContentLength: cfg.maxContentLength,
+      maxAttachments: cfg.maxAttachments,
+      maxNotes: cfg.maxNotes,
+      includeWebpage: cfg.includeWebpage,
+      enableCompression: cfg.enableCompression
     };
   }
 
