@@ -1,14 +1,6 @@
-startup-begin = Chargement de l'extension
-startup-finish = L'extension est prete
-menuitem-label = Plugin Zotero MCP : Exemples d'aide
-menupopup-label = Plugin Zotero MCP : Menu contextuel
-menuitem-submenulabel = Plugin Zotero MCP
-menuitem-filemenulabel = Plugin Zotero MCP : Element du menu Fichier
 prefs-title = Plugin Zotero MCP
 prefs-table-title = Titre
 prefs-table-detail = Detail
-tabpanel-lib-tab-label = Onglet Bibliotheque
-tabpanel-reader-tab-label = Onglet Lecteur
 
 # Client Configuration Instructions
 codex-cli-instructions =

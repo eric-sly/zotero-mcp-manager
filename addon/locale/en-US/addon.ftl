@@ -1,14 +1,6 @@
-startup-begin = Addon is loading
-startup-finish = Addon is ready
-menuitem-label = Zotero MCP Manager: Helper Examples
-menupopup-label = Zotero MCP Manager: Menupopup
-menuitem-submenulabel = Zotero MCP Manager
-menuitem-filemenulabel = Zotero MCP Manager: File Menuitem
 prefs-title = Zotero MCP Manager
 prefs-table-title = Title
 prefs-table-detail = Detail
-tabpanel-lib-tab-label = Lib Tab
-tabpanel-reader-tab-label = Reader Tab
 
 # Client Configuration Instructions
 codex-cli-instructions =

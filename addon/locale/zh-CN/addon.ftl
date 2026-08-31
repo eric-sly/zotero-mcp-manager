@@ -1,14 +1,6 @@
-startup-begin = 插件加载中
-startup-finish = 插件已就绪
-menuitem-label = Zotero MCP Manager: 帮助工具样例
-menupopup-label = Zotero MCP Manager: 弹出菜单
-menuitem-submenulabel = Zotero MCP Manager：子菜单
-menuitem-filemenulabel = Zotero MCP Manager: 文件菜单
 prefs-title = Zotero MCP Manager
 prefs-table-title = 标题
 prefs-table-detail = 详情
-tabpanel-lib-tab-label = 库标签
-tabpanel-reader-tab-label = 阅读器标签
 
 # 客户端配置说明
 codex-cli-instructions =
@@ -315,8 +307,3 @@ config-guide-troubleshooting-list =
 config-guide-generated-time = 生成时间: {$time}
 
 # 语义索引右键菜单
-menu-collection-build-index = 构建索引
-menu-collection-rebuild-index = 重建索引
-menu-collection-clear-index = 清除索引
-menu-collection-clear-confirm = 确定要清除该分类的语义索引吗？
-menu-collection-index-cleared = 索引已清除

@@ -58,8 +58,8 @@ export interface MCPNotification {
 export class StreamableMCPServer {
   private isInitialized: boolean = false;
   private serverInfo = {
-    name: 'zotero-integrated-mcp',
-    version: '1.1.0',
+    name: 'zotero-mcp-manager',
+    version: '1.0.0',
   };
   private clientSessions: Map<string, { initTime: Date; lastActivity: Date; clientInfo?: any }> = new Map();
 

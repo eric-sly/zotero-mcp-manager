@@ -203,8 +203,6 @@
       display: flex; flex-direction: column; align-items: center;
       padding: 20px 28px; background: var(--bg-muted); border-top: 1px solid var(--border);
     }
-    .zmp-ft-qr { display: inline-block; background: #fff; padding: 4px; border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--border); }
-    .zmp-ft-qr img { display: block; width: 100px; height: 100px; border-radius: 4px; }
     .zmp-ft-text { display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--text-3); }
     .zmp-ft a { color: var(--blue); text-decoration: none; }
     .zmp-ft .zmp-d { color: var(--border); }
@@ -216,12 +214,6 @@
       margin: 20px 0 10px; padding-bottom: 6px;
       border-bottom: 1px solid var(--border-light);
     }
-
-    /* Info stats grid (2-col key/value) */
-    .zmp-is { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; }
-    .zmp-is-r { display: flex; justify-content: space-between; font-size: 12px; padding: 4px 0; }
-    .zmp-is-l { color: var(--text-2); }
-    .zmp-is-v { font-weight: 500; }
 
     /* Server off hint */
     .zmp-server-off-hint {
@@ -479,9 +471,6 @@
 
     <!-- ⑤ Footer -->
     <html:div class="zmp-ft">
-      <html:div class="zmp-ft-qr">
-        <html:img src="chrome://__addonRef__/content/icons/mp-qrcode.jpg" alt="公众号二维码" />
-      </html:div>
       <html:div class="zmp-ft-text">
         <html:label
           data-l10n-id="pref-help"

@@ -1,14 +1,6 @@
-startup-begin = Addon wird geladen
-startup-finish = Addon ist bereit
-menuitem-label = Zotero MCP Manager: Hilfsbeispiele
-menupopup-label = Zotero MCP Manager: Menüpopup
-menuitem-submenulabel = Zotero MCP Manager
-menuitem-filemenulabel = Zotero MCP Manager: Datei-Menüeintrag
 prefs-title = Zotero MCP Manager
 prefs-table-title = Titel
 prefs-table-detail = Details
-tabpanel-lib-tab-label = Bibliothek-Tab
-tabpanel-reader-tab-label = Reader-Tab
 
 # Client Configuration Instructions
 codex-cli-instructions =
@@ -315,8 +307,3 @@ config-guide-troubleshooting-list =
 config-guide-generated-time = Generiert am: {$time}
 
 # Kontextmenü für semantische Indizierung
-menu-collection-build-index = Index aufbauen
-menu-collection-rebuild-index = Index neu aufbauen
-menu-collection-clear-index = Index löschen
-menu-collection-clear-confirm = Möchten Sie wirklich den semantischen Index für diese Sammlung löschen?
-menu-collection-index-cleared = Index gelöscht

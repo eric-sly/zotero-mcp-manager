@@ -1,14 +1,6 @@
-startup-begin = アドオンを読み込んでいます
-startup-finish = アドオンの準備が完了しました
-menuitem-label = Zotero MCP Manager: ヘルパーサンプル
-menupopup-label = Zotero MCP Manager: メニューポップアップ
-menuitem-submenulabel = Zotero MCP Manager
-menuitem-filemenulabel = Zotero MCP Manager: ファイルメニュー項目
 prefs-title = Zotero MCP Manager
 prefs-table-title = タイトル
 prefs-table-detail = 詳細
-tabpanel-lib-tab-label = ライブラリタブ
-tabpanel-reader-tab-label = リーダータブ
 
 # Client Configuration Instructions
 codex-cli-instructions =

@@ -1,14 +1,6 @@
-startup-begin = El complemento se está cargando
-startup-finish = El complemento está listo
-menuitem-label = Plugin Zotero MCP: Ejemplos de ayuda
-menupopup-label = Plugin Zotero MCP: Menú emergente
-menuitem-submenulabel = Plugin Zotero MCP
-menuitem-filemenulabel = Plugin Zotero MCP: Elemento de menú Archivo
 prefs-title = Plugin Zotero MCP
 prefs-table-title = Título
 prefs-table-detail = Detalle
-tabpanel-lib-tab-label = Pestaña de biblioteca
-tabpanel-reader-tab-label = Pestaña de lector
 
 # Client Configuration Instructions
 codex-cli-instructions =
@@ -315,8 +307,3 @@ config-guide-troubleshooting-list =
 config-guide-generated-time = Generado el: {$time}
 
 # Menú contextual para indexación semántica
-menu-collection-build-index = Construir índice
-menu-collection-rebuild-index = Reconstruir índice
-menu-collection-clear-index = Limpiar índice
-menu-collection-clear-confirm = ¿Estás seguro de que deseas limpiar el índice semántico de esta colección?
-menu-collection-index-cleared = Índice limpiado
