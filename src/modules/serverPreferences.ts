@@ -5,7 +5,6 @@ declare let ztoolkit: ZToolkit;
 const PREFS_PREFIX = config.prefsPrefix;
 const MCP_SERVER_PORT = `${PREFS_PREFIX}.mcp.server.port`;
 const MCP_SERVER_ENABLED = `${PREFS_PREFIX}.mcp.server.enabled`;
-const MCP_SERVER_ALLOW_REMOTE = `${PREFS_PREFIX}.mcp.server.allowRemote`;
 
 type PreferenceObserver = (name: string) => void;
 
@@ -43,9 +42,9 @@ class ServerPreferences {
     // Always set port if not set
     if (currentPort === undefined || currentPort === null) {
       if (typeof ztoolkit !== 'undefined') {
-        ztoolkit.log(`[ServerPreferences] [DIAGNOSTIC] Setting default port: 23120`);
+        ztoolkit.log(`[ServerPreferences] [DIAGNOSTIC] Setting default port: 23121`);
       }
-      Zotero.Prefs.set(MCP_SERVER_PORT, 23120, true);
+      Zotero.Prefs.set(MCP_SERVER_PORT, 23121, true);
       
       // Immediate verification
       const immediatePortCheck = Zotero.Prefs.get(MCP_SERVER_PORT, true);
@@ -177,7 +176,7 @@ class ServerPreferences {
   }
 
   public getPort(): number {
-    const DEFAULT_PORT = 23120;
+    const DEFAULT_PORT = 23121;
     try {
       const port = Zotero.Prefs.get(MCP_SERVER_PORT, true);
 
@@ -229,22 +228,6 @@ class ServerPreferences {
     } catch (error) {
       ztoolkit.log(`[ServerPreferences] Error getting server enabled status: ${error}. Using default: ${DEFAULT_ENABLED}`);
       return DEFAULT_ENABLED;
-    }
-  }
-
-  public isRemoteAccessAllowed(): boolean {
-    const DEFAULT_ALLOW_REMOTE = false;
-    try {
-      const allowRemote = Zotero.Prefs.get(MCP_SERVER_ALLOW_REMOTE, true);
-
-      if (allowRemote === undefined || allowRemote === null) {
-        return DEFAULT_ALLOW_REMOTE;
-      }
-
-      return Boolean(allowRemote);
-    } catch (error) {
-      ztoolkit.log(`[ServerPreferences] Error getting allow remote status: ${error}. Using default: ${DEFAULT_ALLOW_REMOTE}`);
-      return DEFAULT_ALLOW_REMOTE;
     }
   }
 

@@ -1,6 +1,5 @@
 import { config } from "../../package.json";
 import { getString } from "../utils/locale";
-import { ClientConfigGenerator } from "./clientConfigGenerator";
 
 export async function registerPrefsScripts(_window: Window) {
   // This function is called when the prefs window is opened
@@ -111,7 +110,7 @@ function bindPrefEvents() {
           if (checked) {
             if (!httpServer.isServerRunning()) {
               const portPref = Zotero.Prefs.get("extensions.zotero.zotero-mcp-manager.mcp.server.port", true);
-              const port = typeof portPref === 'number' ? portPref : 23120;
+              const port = typeof portPref === 'number' ? portPref : 23121;
               httpServer.start(port);
               ztoolkit.log(`[PreferenceScript] Server started on port ${port}`);
             }
@@ -149,7 +148,7 @@ function bindPrefEvents() {
         addon.data.prefs!.window.alert(
           getString("pref-server-port-invalid" as any),
         );
-        const originalPort = Zotero.Prefs.get("extensions.zotero.zotero-mcp-manager.mcp.server.port", true) || 23120;
+        const originalPort = Zotero.Prefs.get("extensions.zotero.zotero-mcp-manager.mcp.server.port", true) || 23121;
         portInput.value = originalPort.toString();
       } else {
         Zotero.Prefs.set("extensions.zotero.zotero-mcp-manager.mcp.server.port", port, true);
@@ -158,7 +157,6 @@ function bindPrefEvents() {
   });
 
   // Bind HTML toggle switches (these need manual pref sync since they're not XUL checkboxes)
-  bindHtmlCheckbox(doc, `#zotero-prefpane-${config.addonRef}-mcp-server-allow-remote`, "extensions.zotero.zotero-mcp-manager.mcp.server.allowRemote");
   bindHtmlCheckbox(doc, `#zotero-prefpane-${config.addonRef}-include-metadata`, "extensions.zotero.zotero-mcp-manager.ui.includeMetadata");
   bindHtmlCheckbox(doc, `#zotero-prefpane-${config.addonRef}-custom-include-webpage`, "extensions.zotero.zotero-mcp-manager.custom.includeWebpage");
   bindHtmlCheckbox(doc, `#zotero-prefpane-${config.addonRef}-custom-enable-compression`, "extensions.zotero.zotero-mcp-manager.custom.enableCompression");
@@ -174,104 +172,36 @@ function bindPrefEvents() {
   bindHtmlInput(doc, `#zotero-prefpane-${config.addonRef}-custom-search-limit`, "extensions.zotero.zotero-mcp-manager.custom.searchItemLimit", true);
   bindHtmlInput(doc, `#zotero-prefpane-${config.addonRef}-custom-max-annotations`, "extensions.zotero.zotero-mcp-manager.custom.maxAnnotationsPerRequest", true);
 
-  // Client config generation
-  const clientSelect = doc?.querySelector("#client-type-select") as HTMLSelectElement;
-  const serverNameInput = doc?.querySelector("#server-name-input") as HTMLInputElement;
-  const generateButton = doc?.querySelector("#generate-config-button") as HTMLButtonElement;
-  const copyConfigButton = doc?.querySelector("#copy-config-button") as HTMLButtonElement;
-  const copyInstrButton = doc?.querySelector("#copy-instr-button") as HTMLButtonElement;
-  const configOutput = doc?.querySelector("#config-output") as HTMLElement;
-  const configGuide = doc?.querySelector("#config-guide") as HTMLElement;
+  // Server info display (基础 MCP 连接信息，agent 适配由用户自行配置)
+  const serverNameDisplay = doc?.querySelector("#server-name-display") as HTMLElement;
+  const serverEndpointDisplay = doc?.querySelector("#server-endpoint-display") as HTMLElement;
+  const serverPortDisplay = doc?.querySelector("#server-port-display") as HTMLElement;
+  const copyEndpointButton = doc?.querySelector("#copy-endpoint-button") as HTMLButtonElement;
 
-  let currentConfig = "";
-  let currentGuide = "";
+  const currentPort = Zotero.Prefs.get("extensions.zotero.zotero-mcp-manager.mcp.server.port", true) || 23121;
+  if (serverNameDisplay) serverNameDisplay.textContent = "zotero-manager-mcp";
+  if (serverPortDisplay) serverPortDisplay.textContent = String(currentPort);
+  if (serverEndpointDisplay) serverEndpointDisplay.textContent = `http://127.0.0.1:${currentPort}/mcp`;
 
-  generateButton?.addEventListener("click", () => {
+  copyEndpointButton?.addEventListener("click", async () => {
     try {
-      const clientType = clientSelect?.value || "claude-desktop";
-      const serverName = serverNameInput?.value?.trim() || "zotero-mcp";
-      const port = parseInt(portInput?.value || "23120", 10);
-
-      // Generate configuration
-      currentConfig = ClientConfigGenerator.generateConfig(clientType, port, serverName);
-      currentGuide = ClientConfigGenerator.generateFullGuide(clientType, port, serverName);
-
-      // Display configuration in div panel
-      if (configOutput) {
-        configOutput.textContent = currentConfig;
-      }
-
-      // Display guide in separate area
-      if (configGuide) {
-        configGuide.textContent = currentGuide;
-      }
-
-      // Enable copy button
-      copyConfigButton.disabled = false;
-      copyInstrButton.disabled = false;
-
-      ztoolkit.log(`[PreferenceScript] Generated config for ${clientType}`);
-    } catch (error) {
-      addon.data.prefs!.window.alert(`配置生成失败: ${error}`);
-      ztoolkit.log(`[PreferenceScript] Config generation failed: ${error}`, "error");
-    }
-  });
-
-  copyConfigButton?.addEventListener("click", async () => {
-    try {
-      const success = await ClientConfigGenerator.copyToClipboard(currentConfig);
+      const endpoint = `http://127.0.0.1:${currentPort}/mcp`;
+      const success = await copyTextToClipboard(endpoint);
       if (success) {
-        const originalText = copyConfigButton.textContent;
-        copyConfigButton.textContent = "已复制!";
-        copyConfigButton.style.backgroundColor = "var(--copy-ok-bg)";
-        copyConfigButton.style.color = "var(--tog-knob)";
+        const originalText = copyEndpointButton.textContent;
+        copyEndpointButton.textContent = "已复制!";
+        copyEndpointButton.style.backgroundColor = "var(--copy-ok-bg)";
+        copyEndpointButton.style.color = "var(--tog-knob)";
         setTimeout(() => {
-          copyConfigButton.textContent = originalText;
-          copyConfigButton.style.backgroundColor = "";
-          copyConfigButton.style.color = "";
+          copyEndpointButton.textContent = originalText;
+          copyEndpointButton.style.backgroundColor = "";
+          copyEndpointButton.style.color = "";
         }, 2000);
       } else {
-        addon.data.prefs!.window.alert("自动复制失败，请手动复制配置内容");
+        addon.data.prefs!.window.alert("自动复制失败，请手动复制");
       }
     } catch (error) {
       addon.data.prefs!.window.alert(`复制失败: ${error}`);
-      ztoolkit.log(`[PreferenceScript] Copy failed: ${error}`, "error");
-    }
-  });
-
-  copyInstrButton?.addEventListener("click", async () => {
-    try {
-      const success = await ClientConfigGenerator.copyToClipboard(currentGuide);
-      if (success) {
-        const originalText = copyInstrButton.textContent;
-        copyInstrButton.textContent = "已复制!";
-        copyInstrButton.style.backgroundColor = "var(--copy-ok-bg)";
-        copyInstrButton.style.color = "var(--tog-knob)";
-        setTimeout(() => {
-          copyInstrButton.textContent = originalText;
-          copyInstrButton.style.backgroundColor = "";
-          copyInstrButton.style.color = "";
-        }, 2000);
-      } else {
-        addon.data.prefs!.window.alert("自动复制失败，请手动复制说明内容");
-      }
-    } catch (error) {
-      addon.data.prefs!.window.alert(`复制失败: ${error}`);
-      ztoolkit.log(`[PreferenceScript] Copy instructions failed: ${error}`, "error");
-    }
-  });
-
-  // Auto-generate config when client type changes
-  clientSelect?.addEventListener("change", () => {
-    if (currentConfig) {
-      generateButton?.click();
-    }
-  });
-
-  // Auto-generate config when server name changes
-  serverNameInput?.addEventListener("input", () => {
-    if (currentConfig) {
-      generateButton?.click();
     }
   });
 
@@ -289,12 +219,10 @@ function updateServerDependentUI(doc: Document, enabled: boolean) {
   const serverContent = doc?.querySelector('#server-dependent-content') as HTMLElement;
   const serverOffHint = doc?.querySelector('#server-off-hint') as HTMLElement;
   const portRow = doc?.querySelector('#server-port-row') as HTMLElement;
-  const remoteRow = doc?.querySelector('#server-remote-row') as HTMLElement;
 
   if (serverContent) serverContent.style.display = enabled ? '' : 'none';
   if (serverOffHint) serverOffHint.style.display = enabled ? 'none' : 'block';
   if (portRow) portRow.style.display = enabled ? '' : 'none';
-  if (remoteRow) remoteRow.style.display = enabled ? '' : 'none';
 }
 
 /**
@@ -336,5 +264,42 @@ function bindContentModeToggle(doc: Document) {
         customPanel.classList.add('open');
       }
     });
+  }
+}
+
+/**
+ * Copy text to clipboard using Zotero's built-in API, falling back to DOM tricks
+ */
+async function copyTextToClipboard(text: string): Promise<boolean> {
+  try {
+    if (typeof Zotero !== 'undefined' && Zotero.Utilities && Zotero.Utilities.Internal && Zotero.Utilities.Internal.copyTextToClipboard) {
+      Zotero.Utilities.Internal.copyTextToClipboard(text);
+      return true;
+    }
+    const globalNav = (globalThis as any).navigator;
+    if (globalNav && globalNav.clipboard) {
+      await globalNav.clipboard.writeText(text);
+      return true;
+    }
+    if (typeof ztoolkit !== 'undefined' && ztoolkit.getGlobal) {
+      const globalWindow = ztoolkit.getGlobal('window');
+      if (globalWindow && globalWindow.document) {
+        const textArea = globalWindow.document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        globalWindow.document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        const result = globalWindow.document.execCommand('copy');
+        globalWindow.document.body.removeChild(textArea);
+        return result;
+      }
+    }
+    return false;
+  } catch (error) {
+    ztoolkit.log(`[PreferenceScript] Failed to copy to clipboard: ${error}`, "error");
+    return false;
   }
 }

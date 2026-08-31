@@ -1,5 +1,5 @@
 /**
- * API Endpoint Handlers for Zotero MCP Manager
+ * API Endpoint Handlers for zotero-manager-mcp
  */
 
 

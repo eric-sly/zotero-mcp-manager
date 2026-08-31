@@ -21,7 +21,7 @@ const repoUrl = "https://eric-sly.github.io/zotero-mcp-manager";
 
 function generateUpdateJson(isBeta = false) {
   const currentVersion = isBeta ? `${version}-beta.0` : version;
-  const updateLink = `${repoUrl}/zotero-mcp-manager-${currentVersion}.xpi`;
+  const updateLink = `${repoUrl}/zotero-manager-mcp-${currentVersion}.xpi`;
 
   return {
     addons: {

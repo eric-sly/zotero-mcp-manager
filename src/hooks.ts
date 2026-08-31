@@ -288,8 +288,8 @@ function checkFirstInstallation() {
 function showFirstInstallPrompt() {
   try {
     // Use bilingual text for first install prompt
-    const title = "欢迎使用 Zotero MCP Manager / Welcome to Zotero MCP Manager";
-    const promptText = "感谢安装 Zotero MCP Manager！为了开始使用，您需要为您的 AI 客户端生成配置文件。是否现在打开设置页面来生成配置？\n\nThank you for installing Zotero MCP Manager! To get started, you need to generate configuration files for your AI clients. Would you like to open the settings page now to generate configurations?";
+    const title = "欢迎使用 zotero-manager-mcp / Welcome to zotero-manager-mcp";
+    const promptText = "感谢安装 zotero-manager-mcp！为了开始使用，您需要为您的 AI 客户端生成配置文件。是否现在打开设置页面来生成配置？\n\nThank you for installing zotero-manager-mcp! To get started, you need to generate configuration files for your AI clients. Would you like to open the settings page now to generate configurations?";
     const openPrefsText = "打开设置 / Open Settings";
     const laterText = "稍后配置 / Configure Later";
     

@@ -134,10 +134,9 @@ export class HttpServer {
       ].createInstance(Ci.nsIServerSocket);
 
       // init方法参数：端口，是否仅允许回环地址，backlog队列大小
-      // loopbackOnly=true: 仅监听 127.0.0.1
-      // loopbackOnly=false: 监听 0.0.0.0 (所有接口)
-      const loopbackOnly = !serverPreferences.isRemoteAccessAllowed();
-      Zotero.debug(`[HttpServer] Binding to ${loopbackOnly ? '127.0.0.1' : '0.0.0.0'}:${port}`);
+      // 只监听 127.0.0.1（远程访问已移除，MCP 仅供本机客户端使用）
+      const loopbackOnly = true;
+      Zotero.debug(`[HttpServer] Binding to 127.0.0.1:${port}`);
       this.serverSocket.init(port, loopbackOnly, -1);
       this.serverSocket.asyncListen(this.listener);
       this.isRunning = true;
@@ -801,7 +800,7 @@ export class HttpServer {
 private getCapabilities() {
   return {
     serverInfo: {
-      name: "Zotero MCP Manager",
+      name: "zotero-manager-mcp",
       version: "1.0.0",
       description: "Model Context Protocol integration for Zotero metadata management",
       author: "eric-sly",

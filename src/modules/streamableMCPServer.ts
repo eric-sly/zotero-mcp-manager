@@ -1042,7 +1042,7 @@ export class StreamableMCPServer {
         case 'create_collection': {
           const writeEnabledCC = Zotero.Prefs.get('extensions.zotero.zotero-mcp-manager.write.enabled', true);
           if (writeEnabledCC !== true) {
-            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Manager → Preferences, and enable "Write Operations" to use this feature.');
+            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → zotero-manager-mcp → Preferences, and enable "Write Operations" to use this feature.');
           }
           if (!args?.name) {
             throw new Error('name is required');
@@ -1054,7 +1054,7 @@ export class StreamableMCPServer {
         case 'update_collection': {
           const writeEnabledUC = Zotero.Prefs.get('extensions.zotero.zotero-mcp-manager.write.enabled', true);
           if (writeEnabledUC !== true) {
-            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Manager → Preferences, and enable "Write Operations" to use this feature.');
+            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → zotero-manager-mcp → Preferences, and enable "Write Operations" to use this feature.');
           }
           if (!args?.collectionKey) {
             throw new Error('collectionKey is required');
@@ -1066,7 +1066,7 @@ export class StreamableMCPServer {
         case 'delete_collection': {
           const writeEnabledDC = Zotero.Prefs.get('extensions.zotero.zotero-mcp-manager.write.enabled', true);
           if (writeEnabledDC !== true) {
-            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Manager → Preferences, and enable "Write Operations" to use this feature.');
+            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → zotero-manager-mcp → Preferences, and enable "Write Operations" to use this feature.');
           }
           if (!args?.collectionKey) {
             throw new Error('collectionKey is required');
@@ -1078,7 +1078,7 @@ export class StreamableMCPServer {
         case 'add_items_to_collection': {
           const writeEnabledAI = Zotero.Prefs.get('extensions.zotero.zotero-mcp-manager.write.enabled', true);
           if (writeEnabledAI !== true) {
-            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Manager → Preferences, and enable "Write Operations" to use this feature.');
+            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → zotero-manager-mcp → Preferences, and enable "Write Operations" to use this feature.');
           }
           if (!args?.collectionKey) {
             throw new Error('collectionKey is required');
@@ -1094,7 +1094,7 @@ export class StreamableMCPServer {
         case 'remove_items_from_collection': {
           const writeEnabledRI = Zotero.Prefs.get('extensions.zotero.zotero-mcp-manager.write.enabled', true);
           if (writeEnabledRI !== true) {
-            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Manager → Preferences, and enable "Write Operations" to use this feature.');
+            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → zotero-manager-mcp → Preferences, and enable "Write Operations" to use this feature.');
           }
           if (!args?.collectionKey) {
             throw new Error('collectionKey is required');
@@ -1118,7 +1118,7 @@ export class StreamableMCPServer {
         case 'write_note': {
           const writeEnabled = Zotero.Prefs.get('extensions.zotero.zotero-mcp-manager.write.enabled', true);
           if (writeEnabled !== true) {
-            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Manager → Preferences, and enable "Write Operations" to use this feature.');
+            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → zotero-manager-mcp → Preferences, and enable "Write Operations" to use this feature.');
           }
           if (!args?.action || !args?.content) {
             throw new Error('action and content are required');
@@ -1130,7 +1130,7 @@ export class StreamableMCPServer {
         case 'write_tag': {
           const writeEnabled2 = Zotero.Prefs.get('extensions.zotero.zotero-mcp-manager.write.enabled', true);
           if (writeEnabled2 !== true) {
-            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Manager → Preferences, and enable "Write Operations" to use this feature.');
+            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → zotero-manager-mcp → Preferences, and enable "Write Operations" to use this feature.');
           }
           if (!args?.action || !args?.itemKey || !args?.tags) {
             throw new Error('action, itemKey, and tags are required');
@@ -1142,7 +1142,7 @@ export class StreamableMCPServer {
         case 'write_metadata': {
           const writeEnabled3 = Zotero.Prefs.get('extensions.zotero.zotero-mcp-manager.write.enabled', true);
           if (writeEnabled3 !== true) {
-            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Manager → Preferences, and enable "Write Operations" to use this feature.');
+            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → zotero-manager-mcp → Preferences, and enable "Write Operations" to use this feature.');
           }
           if (!args?.itemKey) {
             throw new Error('itemKey is required');
@@ -1157,7 +1157,7 @@ export class StreamableMCPServer {
         case 'write_item': {
           const writeEnabled4 = Zotero.Prefs.get('extensions.zotero.zotero-mcp-manager.write.enabled', true);
           if (writeEnabled4 !== true) {
-            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → Zotero MCP Manager → Preferences, and enable "Write Operations" to use this feature.');
+            throw new Error('Write operations are currently disabled. Please go to Zotero → Tools → Add-ons → zotero-manager-mcp → Preferences, and enable "Write Operations" to use this feature.');
           }
           if (!args?.action) {
             throw new Error('action is required');

@@ -1,5 +1,5 @@
 /**
- * Intelligent Content Processor for Zotero MCP Manager
+ * Intelligent Content Processor for zotero-manager-mcp
  * Implements advanced algorithms for content importance scoring and intelligent extraction
  * Based on 2024 research: TF-IDF + Improved TextRank + Position Weighting
  */

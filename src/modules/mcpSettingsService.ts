@@ -1,5 +1,5 @@
 /**
- * MCP Settings Service for Zotero MCP Manager
+ * MCP Settings Service for zotero-manager-mcp
  * Manages user preferences for AI client compatibility and content processing
  */
 
@@ -13,40 +13,40 @@ export class MCPSettingsService {
   private static readonly UNIFIED_MODES = {
     'minimal': {
       name: '最小模式 / Minimal',
-      description: '最快速度，最少内容 (500字符)',
-      maxContentLength: 500,
-      maxAttachments: 2,
-      maxNotes: 3,
-      keywordCount: 2,
-      smartTruncateLength: 100,
-      searchItemLimit: 30,
-      maxAnnotationsPerRequest: 15,
+      description: '最快速度，最少内容 (1K字符)',
+      maxContentLength: 1000,
+      maxAttachments: 5,
+      maxNotes: 8,
+      keywordCount: 3,
+      smartTruncateLength: 200,
+      searchItemLimit: 50,
+      maxAnnotationsPerRequest: 30,
       includeWebpage: false,
       enableCompression: true
     },
     'preview': {
       name: '预览模式 / Preview',
-      description: '适中内容，快速预览 (1.5K字符)',
-      maxContentLength: 1500,
-      maxAttachments: 5,
-      maxNotes: 8,
-      keywordCount: 3,
-      smartTruncateLength: 150,
-      searchItemLimit: 50,
-      maxAnnotationsPerRequest: 20,
+      description: '适中内容，快速预览 (4K字符)',
+      maxContentLength: 4000,
+      maxAttachments: 15,
+      maxNotes: 25,
+      keywordCount: 5,
+      smartTruncateLength: 300,
+      searchItemLimit: 100,
+      maxAnnotationsPerRequest: 60,
       includeWebpage: false,
       enableCompression: true
     },
     'standard': {
       name: '标准模式 / Standard',
-      description: '平衡处理，智能内容 (3K字符)',
-      maxContentLength: 3000,
-      maxAttachments: 10,
-      maxNotes: 15,
-      keywordCount: 5,
-      smartTruncateLength: 200,
-      searchItemLimit: 100,
-      maxAnnotationsPerRequest: 50,
+      description: '平衡处理，智能内容 (8K字符)',
+      maxContentLength: 8000,
+      maxAttachments: 30,
+      maxNotes: 50,
+      keywordCount: 8,
+      smartTruncateLength: 500,
+      searchItemLimit: 200,
+      maxAnnotationsPerRequest: 100,
       includeWebpage: true,
       enableCompression: true
     },
@@ -56,10 +56,10 @@ export class MCPSettingsService {
       maxContentLength: -1,
       maxAttachments: -1,
       maxNotes: -1,
-      keywordCount: 20,
-      smartTruncateLength: 1000,
-      searchItemLimit: 1000,
-      maxAnnotationsPerRequest: 200,
+      keywordCount: 50,
+      smartTruncateLength: 2000,
+      searchItemLimit: 2000,
+      maxAnnotationsPerRequest: 500,
       includeWebpage: true,
       enableCompression: false
     }
@@ -72,13 +72,13 @@ export class MCPSettingsService {
     // Unified content mode (replaces the old preset + output mode system)
     'content.mode': 'standard', // minimal, preview, standard, complete, custom
     // Custom mode settings (only used when mode is 'custom')
-    'custom.maxContentLength': 3000,
-    'custom.maxAttachments': 10,
-    'custom.maxNotes': 15,
-    'custom.keywordCount': 5,
-    'custom.smartTruncateLength': 200,
-    'custom.searchItemLimit': 100,
-    'custom.maxAnnotationsPerRequest': 50,
+    'custom.maxContentLength': 8000,
+    'custom.maxAttachments': 30,
+    'custom.maxNotes': 50,
+    'custom.keywordCount': 8,
+    'custom.smartTruncateLength': 500,
+    'custom.searchItemLimit': 200,
+    'custom.maxAnnotationsPerRequest': 100,
     'custom.includeWebpage': true,
     'custom.enableCompression': true,
     // Text formatting options

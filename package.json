@@ -1,10 +1,10 @@
 {
-  "name": "zotero-mcp-manager",
+  "name": "zotero-manager-mcp",
   "type": "module",
-  "version": "1.0.0",
-  "description": "Zotero MCP Manager - metadata management and location for Zotero",
+  "version": "1.1.0",
+  "description": "Zotero Manager MCP - metadata management and location for Zotero",
   "config": {
-    "addonName": "Zotero MCP Manager",
+    "addonName": "zotero-manager-mcp",
     "addonID": "zotero-mcp-manager@autoagent.my",
     "addonRef": "zotero-mcp-manager",
     "addonInstance": "ZoteroMCPManager",

@@ -40,7 +40,7 @@ function checkRequiredFiles() {
     "package.json",
     "update.json",
     "update-beta.json",
-    path.join(".scaffold", "build", "zotero-mcp-manager.xpi"),
+    path.join(".scaffold", "build", "zotero-manager-mcp.xpi"),
   ];
 
   requiredFiles.forEach((file) => {

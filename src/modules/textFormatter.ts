@@ -1,5 +1,5 @@
 /**
- * Text Formatting Utilities for Zotero MCP Manager
+ * Text Formatting Utilities for zotero-manager-mcp
  * Handles conversion from HTML to well-formatted plain text while preserving structure
  */
 
