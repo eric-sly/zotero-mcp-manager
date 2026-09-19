@@ -103,7 +103,7 @@ PDF 抽取（pdfProcessor/pdfService）、全文服务（fulltextService）、�
 
 ## 构建与安装
 
-1. 源码 clone/copy 到本目录（`F:\LLM\zcode workspace\zotero-mcp-slim`），重新 `git init`
+1. 源码 clone/copy 到本目录（`E:\Agents\产出\zotero-mcp-manager\source`），重新 `git init`
 2. `npm install` + `npm run build` → `.scaffold/build/zotero-mcp-plugin.xpi`
 3. **备份当前官方版 xpi**：`C:\Users\sly\AppData\Roaming\Zotero\Zotero\Profiles\uwaqfgd7.default\extensions\zotero-mcp-plugin@autoagent.my.xpi`（复制留存，防回退）
 4. 安装新 xpi 到 Zotero（需重启 Zotero，新旧并存）
